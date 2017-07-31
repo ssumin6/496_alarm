@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="alarm_name_list">
+        <item>기본알람</item>
+        <item>음성알람</item>
+        <item>수학문제</item>
+    </string-array>
+</resources>

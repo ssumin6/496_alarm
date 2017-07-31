@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "884534986788",
+    "firebase_url": "https://alarm-f1b3e.firebaseio.com",
+    "project_id": "alarm-f1b3e",
+    "storage_bucket": "alarm-f1b3e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:884534986788:android:0546e533f0384fc7",
+        "android_client_info": {
+          "package_name": "kaist.alarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "884534986788-cvs4o9u478c7kjsen8ts4ketiojf0v10.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kaist.alarm",
+            "certificate_hash": "50551783d1d66abf63ea0af1d79be014070eb00d"
+          }
+        },
+        {
+          "client_id": "884534986788-ggd5aetq91lut74smq61d1fk46ic2120.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhooVOYlleou0-EtUM_UP44Yq0bJ0gojk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "884534986788-ggd5aetq91lut74smq61d1fk46ic2120.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
