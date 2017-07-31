@@ -29,19 +29,18 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import android.widget.TimePicker.OnTimeChangedListener;
-
 /**
  * Created by q on 2017-07-28.
  */
 
-public class AddActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, OnTimeChangedListener {
+public class AddActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
 
     private Calendar mCalendar;
     private ImageButton addFriends, addMusic;
@@ -75,14 +74,11 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             finish();
         }
 
-        // 캘린더 설정
         mCalendar = new GregorianCalendar();
         mCalendar.set(GregorianCalendar.SECOND, 0);
 
-        // 알람매니저
         mManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 
-        // 기능 알람 선택
         alarmSelector = (Spinner)findViewById(R.id.spinner);
         alarmSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
@@ -101,13 +97,11 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 alarm_kind2 = parent.getItemAtPosition(position).toString();
             }
-
             public void onNothingSelected(AdapterView<?> parent) {
                 alarm_kind2 = null;
             }
         });
 
-        // 단체 알람 선택
         addFriends = (ImageButton)findViewById(R.id.imageButton);
         addFriends.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,9 +128,8 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                 finish();//이 액티비티 종료. 아까 main으로 돌아감
             }
         });
-
         // 일시설정 클래스로 현재 시각을 설정
-        timePicker = (TimePicker) findViewById(R.id.timePicker);
+        timePicker = (TimePicker)findViewById(R.id.timePicker);
         timePicker.setHour(mCalendar.get(Calendar.HOUR_OF_DAY));
         timePicker.setMinute(mCalendar.get(Calendar.MINUTE));
         timePicker.setOnTimeChangedListener(this);
@@ -152,8 +145,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         });
 
     }
-
-    // 서버 or 음악
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode==FRIEND_ADD){
@@ -210,6 +201,12 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         mCalendar.set(Calendar.HOUR, hour);
         mCalendar.set(Calendar.MINUTE, min);
         //Calendar의 값을 string으로 변경
+
+        DateFormat format = new SimpleDateFormat("aa hh:mm");
+        Date date =mCalendar.getTime();
+
+        tem = format.format(date);
+        /*
         if (hour > 12){
             tem = "PM";
             hour -= 12;
@@ -225,16 +222,15 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             tem = tem +"0"+min;
         }else{
             tem = tem +min;
-        }
+        }*/
 
         Log.d("Time",tem);
         //여기서 pendingIntent 생성, requestCode로 무조건 생성.
         //manager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent);
 
         if(group_friend!= null &&group_allow_box.isChecked()&& group_friend.size()>1){
-            sendGroupAlarm(alarm_kind, mCalendar.toString());//group 알람인 경우 생성된다.
+            sendGroupAlarm(alarm_kind, tem);//group 알람인 경우 생성된다.
         }
-
         // spinner에 따라 다른 알람이 울림
 
         if (alarm_kind.equals("기본알람")) {
@@ -257,7 +253,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             Log.i("HelloAlarmActivity", mCalendar.getTime().toString());
         }
     }
-
 
     //기능에 따라 서로 다른 pendingintent 설정
     private PendingIntent pendingIntent1() {
@@ -295,8 +290,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         String url = "http://52.79.200.191:8080/room";
         new NetworkTask().execute(url, alarm_type, calToTime);
     }
-
-
     class NetworkTask extends AsyncTask<String, Void, String> {
 
         private String url;
@@ -348,4 +341,3 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         protected  void onPostExecute(String str){super.onPostExecute(str);}
     }
 }
-

@@ -8,6 +8,7 @@ public class Alarm {
     String time_text;
     boolean open;
     int pending_list_index;
+    String alarm_type;
 
     public Alarm(int requestCode, String TimeText) {
         time_text = TimeText;
@@ -16,5 +17,8 @@ public class Alarm {
     }
     public void setOpen(boolean tx){
         open = tx;
+    }
+    public void setAlarm_type(String type){
+        alarm_type = type;
     }
 }

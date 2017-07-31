@@ -21,8 +21,21 @@ public class FirebaseMessagingService extends  com.google.firebase.messaging.Fir
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
         intent = new Intent(this, MainActivity.class);
-        sendNotification(remoteMessage.getData().get("message"));
-        intent.putExtra("AlertSET",1);
+        String message = remoteMessage.getData().get("message]");
+        sendNotification(message);
+        String alarm_type = remoteMessage.getData().get("alarmtype]");
+        String time = remoteMessage.getData().get("time]");
+        String room_id = remoteMessage.getData().get("id]");
+
+        intent.putExtra("room_id",room_id);
+        intent.putExtra("time", time);
+        intent.putExtra("alarm_type",alarm_type);
+        intent.putExtra("message", message);
+        if (message == null){
+            intent.putExtra("AlertSET",3);
+        }else{
+            intent.putExtra("AlertSET",1);
+        }
         startActivity(intent);
     }
 

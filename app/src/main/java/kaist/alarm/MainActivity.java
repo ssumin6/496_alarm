@@ -26,7 +26,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private String thumbnail;
     private String phonenumber;
     private String dirPath;
+    private String room_id;
+    private String alarm_type;
+    private String time;
     private boolean isClicked = false;
     // 뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨
     @Override
@@ -62,13 +69,16 @@ public class MainActivity extends AppCompatActivity {
                 FileInputStream fis = new FileInputStream(loadPath);
                 BufferedReader bufferReader = new BufferedReader(new InputStreamReader(fis));
                 String temp;
+                int last;
                 while ((temp = bufferReader.readLine()) != null) {
                     String[] tokens= temp.split("&");
                     int sese = Integer.parseInt(tokens[2]);
+                    last = sese;
                     boolean what= Boolean.parseBoolean(tokens[1]);
                     Alarm one = new Alarm(sese,tokens[0]);
                     one.setOpen(what);
                     toPut.add(one);
+                alarm_request_code = last;
                 Log.v(null, "" + toPut.toString());
                 }
             } catch (Exception e) {
@@ -106,29 +116,56 @@ public class MainActivity extends AppCompatActivity {
         nickname= kakao.getStringExtra("nickname");
         thumbnail = kakao.getStringExtra("thumbnail");
         phonenumber = kakao.getStringExtra("phonenumber");
+        phonenumber = phonenumber.replace("+82","0");
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d("token",token);
         ServerConnection(nickname, thumbnail, phonenumber,token);
 
+        //setting in order to get intent.
         int setting = -1;
+        room_id = null;
+        time="";
+        alarm_type="";
+        String message="";
+
+
         Intent alertss = getIntent();
         if (alertss != null){
-            setting = alertss.getIntExtra("AlertSET",0);
+            setting = alertss.getIntExtra("AlertSET",0);//1인경우 initial setting, 3인 경우 modified by manager.
+            room_id = alertss.getStringExtra("room_id");
+            message=alertss.getStringExtra("message");
+            alarm_type = alertss.getStringExtra("alarm_type");
+            time = alertss.getStringExtra("time");
         }
 
         if(setting==1) {//alert Dialog
             AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
-            alert_confirm.setMessage("알람을 수락하시겠습니까?").setCancelable(false).setPositiveButton("수락",
+            alert_confirm.setMessage("알람을 수락하시겠습니까?\n"+message).setCancelable(false).setPositiveButton("수락",
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // 'YES'
+                            //알람매니저로 세팅도 해야함
+                            SimpleDateFormat sdf = new SimpleDateFormat("aa hh:mm");
+                            try {
+                                Date date = sdf.parse(time);
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(date);
+
+                            }catch(ParseException e){
+                                e.printStackTrace();
+                            }
+                            Alarm new_one = new Alarm(alarm_request_code, time);
+                            new_one.setAlarm_type(alarm_type);
+                            mAdapter.notifyDataSetChanged();
+                            alarm_request_code+=1;
                         }
                     }).setNegativeButton("거절",
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // 'No'
+                            String url = "http://52.79.200.191:8080/room_user";
+                            new NetworkTask2().execute(url, room_id, phonenumber);
                             return;
                         }
                     });
@@ -226,6 +263,33 @@ public class MainActivity extends AppCompatActivity {
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
             try{
                 result = requestHttpURLConnection.request(url, values);
+                return result;
+            }catch(IOException e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+        @Override
+        protected  void onPreExecute(){super.onPreExecute();}
+
+        @Override
+        protected  void onPostExecute(String str){super.onPostExecute(str);}
+    }
+
+    class NetworkTask2 extends AsyncTask<String, Void, String>{
+
+        private String url;
+
+        @Override
+        protected String doInBackground(String... params){
+            Log.d("serverConnection","doInBackground()");
+            url = params[0];
+            url = url+"/"+params[1]+"&&"+params[2];
+            Log.d("serverConnection","NetworkTask2 in MainActivity.class");
+            String result;
+            RequestHttpGeneral requestHttpURLConnection = new RequestHttpGeneral();
+            try{
+                result = requestHttpURLConnection.request(url, "DELETE");
                 return result;
             }catch(IOException e){
                 e.printStackTrace();
