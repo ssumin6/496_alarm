@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private String phonenumber;
     private String dirPath;
     private boolean isClicked = false;
-
+    // 뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
