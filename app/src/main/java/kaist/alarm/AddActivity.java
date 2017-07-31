@@ -15,7 +15,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -56,6 +55,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
     private int requestCode;
     private final int FRIEND_ADD =1083;
+    private final int MUSIC_ADD = 2017;
     private String alarm_kind, alarm_kind2;
     private String my_Phone;//내 핸드폰 전화번호
     private String tem;//시간 표시
@@ -142,7 +142,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             @Override
             public void onClick(View v){
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i,10);
+                startActivityForResult(i,MUSIC_ADD);
             }
         });
 
@@ -153,7 +153,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             if (resultCode==Activity.RESULT_OK){
                 group_friend = (ArrayList<Friend>) data.getSerializableExtra("group_list");
             }
-        } else if(requestCode==10){
+        } else if(requestCode==MUSIC_ADD){
             if(resultCode==Activity.RESULT_OK){
                 Uri uriSound=data.getData();
                 getMusic(this, uriSound);

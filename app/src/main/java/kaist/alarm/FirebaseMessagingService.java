@@ -25,7 +25,7 @@ public class FirebaseMessagingService extends  com.google.firebase.messaging.Fir
         sendNotification(message);
         String alarm_type = remoteMessage.getData().get("alarmtype]");
         String time = remoteMessage.getData().get("time]");
-        String room_id = remoteMessage.getData().get("id]");
+        String room_id = remoteMessage.getData().get("roomid]");
 
         intent.putExtra("room_id",room_id);
         intent.putExtra("time", time);

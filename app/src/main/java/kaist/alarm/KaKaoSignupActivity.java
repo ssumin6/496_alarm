@@ -96,7 +96,6 @@ public class KaKaoSignupActivity extends AppCompatActivity {
         Intent start = new Intent(this, MainActivity.class);
         start.putExtra("nickname", nickname);
         start.putExtra("thumbnail", thumbnail);
-        start.putExtra("phonenumber", phonenumber);
         startActivity(start);
         finish();
     }

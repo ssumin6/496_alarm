@@ -2,6 +2,7 @@ package kaist.alarm;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     Alarm one = new Alarm(sese,tokens[0]);
                     one.setOpen(what);
                     toPut.add(one);
-                alarm_request_code = last;
+                alarm_request_code = last+1;
                 Log.v(null, "" + toPut.toString());
                 }
             } catch (Exception e) {
@@ -115,7 +117,8 @@ public class MainActivity extends AppCompatActivity {
         Intent kakao = getIntent();
         nickname= kakao.getStringExtra("nickname");
         thumbnail = kakao.getStringExtra("thumbnail");
-        phonenumber = kakao.getStringExtra("phonenumber");
+        TelephonyManager mgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        phonenumber = mgr.getLine1Number();
         phonenumber = phonenumber.replace("+82","0");
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d("token",token);
@@ -132,10 +135,12 @@ public class MainActivity extends AppCompatActivity {
         Intent alertss = getIntent();
         if (alertss != null){
             setting = alertss.getIntExtra("AlertSET",0);//1인경우 initial setting, 3인 경우 modified by manager.
-            room_id = alertss.getStringExtra("room_id");
-            message=alertss.getStringExtra("message");
-            alarm_type = alertss.getStringExtra("alarm_type");
-            time = alertss.getStringExtra("time");
+            if (setting!= 0){
+                room_id = alertss.getStringExtra("room_id");
+                message=alertss.getStringExtra("message");
+                alarm_type = alertss.getStringExtra("alarm_type");
+                time = alertss.getStringExtra("time");
+            }
         }
 
         if(setting==1) {//alert Dialog
@@ -157,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             Alarm new_one = new Alarm(alarm_request_code, time);
                             new_one.setAlarm_type(alarm_type);
+                            mAdapter.add(new_one);
                             mAdapter.notifyDataSetChanged();
                             alarm_request_code+=1;
                         }
@@ -285,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("serverConnection","doInBackground()");
             url = params[0];
             url = url+"/"+params[1]+"&&"+params[2];
+            Log.d("WHOAREYOU", url);
             Log.d("serverConnection","NetworkTask2 in MainActivity.class");
             String result;
             RequestHttpGeneral requestHttpURLConnection = new RequestHttpGeneral();
