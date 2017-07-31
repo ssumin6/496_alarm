@@ -82,13 +82,19 @@ public class SensitiveAlarm extends AppCompatActivity implements SensorEventList
 
         txv = (TextView) findViewById(R.id.text1);
 
-        mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-                mp.start();
-            }
-        });
-        mMediaPlayer.prepareAsync();
+        if (mMediaPlayer == null){
+            mMediaPlayer = MediaPlayer.create(this, R.raw.guitar);
+            mMediaPlayer.setLooping(true);
+            mMediaPlayer.start();
+        } else {
+            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setLooping(true);
+                    mp.start();
+                }
+            });
+            mMediaPlayer.prepareAsync();
+        }
 
     }
 

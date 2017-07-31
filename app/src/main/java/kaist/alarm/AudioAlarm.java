@@ -117,9 +117,11 @@ public class AudioAlarm extends AppCompatActivity {
                     }
                 }
                 else{
+                    Log.i("왜", "안꺼ㅏ쪄*************");
                     pos = mMediaPlayer.getCurrentPosition();
                     mMediaPlayer.pause();
                     mRecognizer.startListening(i);
+                    Log.i("왜2", "안꺼ㅏ쪄*************");
                 }
             }
         });
@@ -131,13 +133,19 @@ public class AudioAlarm extends AppCompatActivity {
             }
         });
 
-        mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-                mp.start();
-            }
-        });
-        mMediaPlayer.prepareAsync();
+        if (mMediaPlayer == null){
+            mMediaPlayer = MediaPlayer.create(this, R.raw.guitar);
+            mMediaPlayer.setLooping(true);
+            mMediaPlayer.start();
+        } else {
+            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setLooping(true);
+                    mp.start();
+                }
+            });
+            mMediaPlayer.prepareAsync();
+        }
 
         try{
             JSONArray jarray = new JSONArray(json); //JSONArray 생성
@@ -149,7 +157,7 @@ public class AudioAlarm extends AppCompatActivity {
             e.printStackTrace();
         }
         double randomValue = Math.random();
-        j = (int)(randomValue*9);
+        j = (int)(randomValue*7);
         txv3.setText(list.get(j).toString());
 
         Log.d("뭐지", list.get(j).toString());
@@ -219,6 +227,8 @@ public class AudioAlarm extends AppCompatActivity {
             rm2 = list.get(j).toString().replaceAll(" ", "");
             if (rm.equals(rm2)){
                 txv2.setText("correct!");
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
                 finish();
             }
             else{
