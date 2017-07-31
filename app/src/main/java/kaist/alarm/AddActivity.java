@@ -33,6 +33,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import android.widget.TimePicker.OnTimeChangedListener;
@@ -40,9 +42,9 @@ import android.widget.TimePicker.OnTimeChangedListener;
  * Created by q on 2017-07-28.
  */
 
-public class AddActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
+public class AddActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, TimePicker.OnTimeChangedListener{
 
-    private Calendar mCalendar;
+    private GregorianCalendar mCalendar;
     private ImageButton addFriends, addMusic;
     private Button saveButton;
     private CheckBox group_allow_box;
@@ -188,7 +190,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
     // 알람 저장
     public void saveAlarm(){
-        mCalendar = Calendar.getInstance();
         int hour, min;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             hour = timePicker.getHour();
@@ -203,7 +204,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         //Calendar의 값을 string으로 변경
 
         DateFormat format = new SimpleDateFormat("aa hh:mm");
-        Date date =mCalendar.getTime();
+        Date date = mCalendar.getTime();
 
         tem = format.format(date);
         /*
