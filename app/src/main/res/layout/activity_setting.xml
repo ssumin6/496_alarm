@@ -26,6 +26,12 @@
             android:layout_height="match_parent"
             android:entries="@array/alarm_name_list"/>
 
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:entries="@array/alarm_name_list2"/>
+
     </LinearLayout>
 
     <TextView
@@ -65,6 +71,13 @@
 
         <ImageButton
             android:id="@+id/imageButton"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_group_add_white" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
             android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
