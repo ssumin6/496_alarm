@@ -26,8 +26,7 @@
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"
-                    android:excludeFromRecents="true"
-                    android:noHistory="true"/>
+                    />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,9 +34,9 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".KaKaoSignupActivity" />
         <activity android:name=".FriendAddActivity"/>
-        <activity android:name=".AudioAlarm"/>
-        <activity android:name=".MathAlarm"/>
-        <activity android:name=".BasicAlarm"/>
+        <activity android:name=".AudioAlarm" />
+        <activity android:name=".MathAlarm" />
+        <activity android:name=".BasicAlarm" />
         <activity android:name=".SensitiveAlarm"/>
 
         <service

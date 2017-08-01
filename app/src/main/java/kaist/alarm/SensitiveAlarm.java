@@ -31,7 +31,7 @@ import java.io.IOException;
  * Created by q on 2017-07-31.
  */
 
-public class SensitiveAlarm extends Activity implements SensorEventListener{
+public class SensitiveAlarm extends AppCompatActivity implements SensorEventListener{
 
     private static PowerManager.WakeLock sCpuWakeLock;
     Context context = this;

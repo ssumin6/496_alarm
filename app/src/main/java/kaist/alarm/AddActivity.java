@@ -51,7 +51,7 @@ import android.widget.Toast;
  * Created by q on 2017-07-28.
  */
 
-public class AddActivity extends Activity implements CompoundButton.OnCheckedChangeListener, TimePicker.OnTimeChangedListener{
+public class AddActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, TimePicker.OnTimeChangedListener{
 
     private GregorianCalendar mCalendar;
     private ImageButton addFriends ;

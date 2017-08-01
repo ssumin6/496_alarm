@@ -35,7 +35,7 @@ import java.io.IOException;
  * Created by q on 2017-07-31.
  */
 
-public class BasicAlarm extends Activity {
+public class BasicAlarm extends AppCompatActivity {
 
     private static PowerManager.WakeLock sCpuWakeLock;
     Context context = this;

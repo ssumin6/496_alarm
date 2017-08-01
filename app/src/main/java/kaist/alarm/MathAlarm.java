@@ -34,7 +34,7 @@ import java.io.IOException;
  * Created by q on 2017-07-29.
  */
 
-public class MathAlarm extends Activity {
+public class MathAlarm extends AppCompatActivity {
 
     TextView txv, txv2, txv3;
     private static PowerManager.WakeLock sCpuWakeLock;
