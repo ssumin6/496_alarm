@@ -15,7 +15,6 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import static kaist.alarm.AddActivity.mMediaPlayer;
 
 /**
  * Created by q on 2017-07-31.
@@ -25,6 +24,7 @@ public class SensitiveAlarm extends AppCompatActivity implements SensorEventList
 
     private static PowerManager.WakeLock sCpuWakeLock;
     Context context = this;
+    public MediaPlayer mMediaPlayer;
 
     // 맴버변수 (마지막과 현재값을 비교하여 변위를 계산하는 방식)
     private long         m_lLastTime;
@@ -39,6 +39,7 @@ public class SensitiveAlarm extends AppCompatActivity implements SensorEventList
     private SensorManager    m_senMng;
     private Sensor m_senAccelerometer;
 
+    int COUNT;
     int count = 0;
     TextView txv;
 
@@ -136,10 +137,10 @@ public class SensitiveAlarm extends AppCompatActivity implements SensorEventList
                 // 임계값보다 크게 움직였을 경우 다음을 수행
                 if(m_fSpeed > SHAKE_THRESHOLD)
                 {
-                    if(count <= 5) {
+                    if(count <= COUNT) {
                         Log.i("kmsTest", "Shake");
                         count ++;
-                        txv.setText(Integer.toString(count)+"번 : 계속 흔들어!");
+                        txv.setText(Integer.toString(count)+"번 흔들어!" + "<br />" + "<br />" + Integer.toString(count)+"번 : 계속 흔들어!");
                     } else{
                         Log.i("엥벌써나옴?","?");
                         finish();

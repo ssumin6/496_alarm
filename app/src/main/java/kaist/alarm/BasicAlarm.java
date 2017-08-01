@@ -1,15 +1,24 @@
 package kaist.alarm;
 
+import android.*;
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import static kaist.alarm.AddActivity.mMediaPlayer;
+import java.io.IOException;
+
 
 /**
  * Created by q on 2017-07-31.
@@ -19,9 +28,12 @@ public class BasicAlarm extends AppCompatActivity{
 
     private static PowerManager.WakeLock sCpuWakeLock;
     Context context = this;
+    public MediaPlayer mMediaPlayer;
+
+    Uri mu;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.basic_alarm);
@@ -59,18 +71,50 @@ public class BasicAlarm extends AppCompatActivity{
             }
         });
 
-        if (mMediaPlayer == null){
+
+        Intent intent = getIntent();
+        String musicType = intent.getStringExtra("music");
+        if (musicType != null) {
+            mu = Uri.parse(musicType);
+        } else{
+
+        }
+
+        mMediaPlayer = new MediaPlayer();
+        if (mu != null) {
+            try {
+                if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    if(ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    }
+                    else{
+                        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                    }
+                }
+                else{
+                    mMediaPlayer.setDataSource(context, mu);
+                    mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        public void onPrepared(MediaPlayer mp) {
+                            mp.setLooping(true);
+                            mp.start();
+
+                        }
+                    });
+                    mMediaPlayer.prepareAsync();
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
             mMediaPlayer = MediaPlayer.create(this, R.raw.guitar);
             mMediaPlayer.setLooping(true);
             mMediaPlayer.start();
-        } else {
-            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                public void onPrepared(MediaPlayer mp) {
-                    mp.setLooping(true);
-                    mp.start();
-                }
-            });
-            mMediaPlayer.prepareAsync();
         }
 
     }

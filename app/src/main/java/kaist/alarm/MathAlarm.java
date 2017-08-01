@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import static kaist.alarm.AddActivity.mMediaPlayer;
 
 /**
  * Created by q on 2017-07-29.
@@ -28,7 +27,9 @@ public class MathAlarm extends AppCompatActivity {
     TextView txv, txv2, txv3;
     private static PowerManager.WakeLock sCpuWakeLock;
     Context context = this;
-    int num1, num2, ans;
+    int num1, num2, num3, ans;
+    public MediaPlayer mMediaPlayer;
+    String level;
 
 
     @Override
@@ -104,11 +105,27 @@ public class MathAlarm extends AppCompatActivity {
 
         double randomValue = Math.random();
         double randomValue2 = Math.random();
-        num1 = (int)(randomValue*100) + 1;
-        num2 = (int)(randomValue2*100) + 1;
-        ans =  num1 + num2;
 
-        txv3.setText(num1 +" + "+ num2);
+        if(level == "상") {
+            num1 = (int) (randomValue * 100) + 1;
+            num2 = (int) (randomValue2 * 100) + 1;
+            ans = (num1 + num2) * num3;
+
+            txv3.setText(" ( " + num1 + " + " + num2 + " ) " + " * " + num3);
+
+        } else if(level == "중"){
+            num1 = (int) (randomValue * 80) + 21;
+            num2 = (int) (randomValue2 * 80) + 21;
+            ans = num1 + num2;
+
+            txv3.setText(num1 + " + " + num2);
+        } else if(level == "하"){
+            num1 = (int) (randomValue * 20) + 1;
+            num2 = (int) (randomValue2 * 20) + 1;
+            ans = num1 + num2;
+
+            txv3.setText(num1 + " + " + num2);
+        }
 
     }
 

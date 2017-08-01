@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import static kaist.alarm.AddActivity.mMediaPlayer;
 
 /**
  * Created by q on 2017-07-29.
@@ -54,7 +53,7 @@ public class AudioAlarm extends AppCompatActivity {
     int pos; // 재생 멈춘 시점
     ArrayList<String> list;
     int j;
-
+    public MediaPlayer mMediaPlayer;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -63,7 +62,7 @@ public class AudioAlarm extends AppCompatActivity {
         setContentView(R.layout.audio_alarm);
 
         final Activity activity_c = this;
-        ImageButton ib = (ImageButton) findViewById(R.id.mike);
+        Button ib = (Button) findViewById(R.id.mike);
         txv = (TextView) findViewById(R.id.answer);
         txv2 = (TextView) findViewById(R.id.answer2);
         txv3 = (TextView) findViewById(R.id.question);

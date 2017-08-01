@@ -184,6 +184,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
         notifyItemInserted(last_position);
     }
 
+
     public ArrayList<Alarm> getAlarmList(){
         return mItems;
     }
