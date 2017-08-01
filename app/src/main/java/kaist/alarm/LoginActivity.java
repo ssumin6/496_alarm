@@ -11,6 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -30,6 +34,25 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //
+        ImageView view = (ImageView) findViewById(R.id.sejoon);
+        TextView view2 = (TextView) findViewById(R.id.appname);
+        Animation animation2
+                = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale);
+        // 애니메이션을 시작
+        view2.startAnimation(animation2);
+        // 화면을 갱신
+
+        view2.invalidate();
+
+        // 애니메이션xml 파일을 로드
+        Animation animation
+                = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.expand_animation);
+        // 애니메이션을 시작
+        view.startAnimation(animation);
+        // 화면을 갱신
+        view.invalidate();
+
         if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.M){
             if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED){
                 requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS},PERMISSION_REQUEST_READ);

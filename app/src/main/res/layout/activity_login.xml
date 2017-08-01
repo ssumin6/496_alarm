@@ -5,14 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="kaist.alarm.LoginActivity">
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/sejoon"
+        android:src="@drawable/ic_sejoon"
+        android:layout_above="@+id/com_kakao_login"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="93dp" />
+    <TextView
 
+        android:textColor="#FF00FF"
+        android:id="@+id/appname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="50px"
+        android:text="세준이를 부탁해"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="17dp"
+
+        />
     <com.kakao.usermgmt.LoginButton
         android:id="@+id/com_kakao_login"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="483dp" />
+        tools:layout_editor_absoluteY="483dp"
+        android:layout_marginBottom="18dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
