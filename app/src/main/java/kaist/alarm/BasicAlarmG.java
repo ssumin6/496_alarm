@@ -34,6 +34,8 @@ public class BasicAlarmG extends AppCompatActivity{
     String musicType;
     String ringType;
     Vibrator vibrator;
+    String phone;
+    String room;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,10 @@ public class BasicAlarmG extends AppCompatActivity{
         Intent intent = getIntent();
         musicType = intent.getStringExtra("music");
         ringType = intent.getStringExtra("ring");
+        room = intent.getStringExtra("room");
+        phone = intent.getStringExtra("phone");
+        vibrate();
+        /*
         if (ringType.equals("벨소리")) {
             musicSelect();
         } else if(ringType.equals("진동")){
@@ -85,7 +91,7 @@ public class BasicAlarmG extends AppCompatActivity{
         } else{
             musicSelect();
             vibrate();
-        }
+        }*/
     }
 
     private void resetAlarm(){
@@ -151,7 +157,7 @@ public class BasicAlarmG extends AppCompatActivity{
     }
     private void AWAKEME(){
         String url = "http://52.79.200.191:8080/room_user";
-        //new NetworkTask2().execute(url,room, phone);
+        new NetworkTask2().execute(url,room, phone);
     }
 
     class NetworkTask2 extends AsyncTask<String, Void, String> {
