@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,14 +26,14 @@ import java.io.IOException;
  */
 
 public class BasicAlarmG extends AppCompatActivity{
-
     private static PowerManager.WakeLock sCpuWakeLock;
     Context context = this;
     public MediaPlayer mMediaPlayer;
-    private String room;
-    private String phone;
 
     Uri mu;
+    String musicType;
+    String ringType;
+    Vibrator vibrator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,33 +70,51 @@ public class BasicAlarmG extends AppCompatActivity{
         Button c = (Button) findViewById(R.id.reset2);
         c.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AWAKEME();
                 resetAlarm();
             }
         });
 
 
         Intent intent = getIntent();
-        String musicType = intent.getStringExtra("music");
-        room = intent.getStringExtra("room");
-        phone = intent.getStringExtra("phone");
+        musicType = intent.getStringExtra("music");
+        ringType = intent.getStringExtra("ring");
+        if (ringType.equals("벨소리")) {
+            musicSelect();
+        } else if(ringType.equals("진동")){
+            vibrate();
+        } else{
+            musicSelect();
+            vibrate();
+        }
+    }
+
+    private void resetAlarm(){
+        if(mMediaPlayer!=null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+        }
+        if(vibrator != null) {
+            vibrator.cancel();
+        }
+        finish();
+    }
+
+    private void musicSelect(){
         if (musicType != null) {
             mu = Uri.parse(musicType);
-        } else{
+        } else {
 
         }
 
         mMediaPlayer = new MediaPlayer();
         if (mu != null) {
             try {
-                if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                    if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    } else {
+                        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                     }
-                    else{
-                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                    }
-                }
-                else{
+                } else {
                     mMediaPlayer.setDataSource(context, mu);
                     mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         public void onPrepared(MediaPlayer mp) {
@@ -123,16 +142,18 @@ public class BasicAlarmG extends AppCompatActivity{
         }
 
     }
+
+    private void vibrate(){
+
+        vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(new long[]{500, 2000},0);
+
+    }
     private void AWAKEME(){
         String url = "http://52.79.200.191:8080/room_user";
-        new NetworkTask2().execute(url,room, phone);
+        //new NetworkTask2().execute(url,room, phone);
     }
 
-    private void resetAlarm(){
-        mMediaPlayer.stop();
-        mMediaPlayer.release();
-        finish();
-    }
     class NetworkTask2 extends AsyncTask<String, Void, String> {
 
         private String url;

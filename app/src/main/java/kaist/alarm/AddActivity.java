@@ -407,6 +407,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                     temp.put("thumbnail",group_friend.get(i).getThumbImage());
                     temp.put("tokenid",group_friend.get(i).getToken());
                     temp.put("phonenumber",group_friend.get(i).getPhonenumber());
+                    temp.put("wakeup",false);
                     userlist.put(temp);
                 }
                 values.put("userlist",userlist);

@@ -324,8 +324,8 @@ public class MainActivity extends AppCompatActivity {
                         values.put("phonenumber",params[i]);
                     }if (i==4){
                         values.put("tokenid",params[i]);
-                    }
-                }}catch(JSONException e){
+                    }}
+            }catch(JSONException e){
                 e.printStackTrace();
             }
             Log.d("serverConnection","JSONObject"+values.toString());
