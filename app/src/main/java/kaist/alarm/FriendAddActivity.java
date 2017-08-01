@@ -32,7 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class FriendAddActivity extends Activity {
+public class FriendAddActivity extends AppCompatActivity {
     private ListView friendList;
     private Button saveButton;
     private Button refreshButton;

@@ -44,7 +44,7 @@ import java.util.ArrayList;
  * Created by q on 2017-07-29.
  */
 
-public class AudioAlarm extends Activity {
+public class AudioAlarm extends AppCompatActivity {
 
     TextView txv, txv2, txv3;
     String rm, rm2;
