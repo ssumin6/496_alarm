@@ -181,9 +181,12 @@ public class MainActivity extends AppCompatActivity {
                                 PendingIntent pi;
 
                                 if (alarm_type.equals("기본알람")) {
-                                    i= new Intent(getApplicationContext(), BasicAlarmG.class);
+                                    i= new Intent(getApplicationContext(), BasicAlarm.class);
                                     i.putExtra("room",room_id);
                                     i.putExtra("phone",phonenumber);
+                                    i.putExtra("group",true);
+                                    i.putExtra("phone",phonenumber);
+                                    i.putExtra("room",room_id);
                                     pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
                                     AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
                                     mManager.setAlarmClock(info, pi);

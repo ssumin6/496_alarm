@@ -73,6 +73,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private String ring;
     private String mu;
     private String room_id;
+    private PendingIntent pi;
     private boolean isGroup = false;
     private int level;
     private int cnt;
@@ -297,58 +298,51 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
         if (alarm_kind.equals("기본알람")) {
             AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(mCalendar.getTimeInMillis(), pendingIntent1());
-            mManager.setAlarmClock(info, pendingIntent1());
+            mManager.setAlarmClock(info, pi);
             Log.i("HelloAlarmActivity", mCalendar.getTime().toString());
 
         } else if (alarm_kind.equals("음성알람")) {
             AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(mCalendar.getTimeInMillis(), pendingIntent2());
-            mManager.setAlarmClock(info, pendingIntent2());
+            mManager.setAlarmClock(info,pi);
             Log.i("HelloAlarmActivity", mCalendar.getTime().toString());
 
         } else if (alarm_kind.equals("수학문제")) {
             AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(mCalendar.getTimeInMillis(), pendingIntent3());
-            mManager.setAlarmClock(info, pendingIntent3());
+            mManager.setAlarmClock(info, pi);
             Log.i("HelloAlarmActivity", mCalendar.getTime().toString());
         } else if (alarm_kind.equals("흔들기")) {
             AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(mCalendar.getTimeInMillis(), pendingIntent4());
-            mManager.setAlarmClock(info, pendingIntent4());
+            mManager.setAlarmClock(info, pi);
             Log.i("HelloAlarmActivity", mCalendar.getTime().toString());
         }
     }
 
     //기능에 따라 서로 다른 pendingintent 설정
     private PendingIntent pendingIntent1() {
-        /*if (isGroup) {
-            Intent i = new Intent(getApplicationContext(), BasicAlarmG.class);
-            i.putExtra("music", mu);
 
-            try {
-                Log.d("WHOAREYOU","ID: "+room_id);
-                JSONObject json = new JSONObject(room_id);
-                room_id = (String) json.get("m");
-                // spinner에 따라 다른 알람이 울림
-            }catch(JSONException e){
-                e.printStackTrace();
-            }
-            i.putExtra("room",room_id);
-            i.putExtra("phone",my_Phone);
-            i.putExtra("ring", ring);
-            PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
-            return pi;
-        }else{*/
-            Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
-            i.putExtra("music", mu);
-            i.putExtra("ring", ring);
-            PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
-            return pi;
-    //    }
+        Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
+        i.putExtra("music", mu);
+        i.putExtra("ring", ring);
+        i.putExtra("group",isGroup);
+        i.putExtra("phone",my_Phone);
+        try{
+            JSONObject json = new JSONObject(room_id);
+            room_id = (String)json.get("m");
+            Log.d("WHOAREYOU", room_id);
+        }catch(Exception e){
+            e.printStackTrace();
+            room_id = null;
+        }
+        i.putExtra("room", room_id);
+        pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pi;
     }
 
     private PendingIntent pendingIntent2() {
         Intent i = new Intent(getApplicationContext(), AudioAlarm.class);
         i.putExtra("music", mu);
         i.putExtra("ring", ring);
-        PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
         return pi;
     }
 
@@ -358,7 +352,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         i.putExtra("ring", ring);
         i.putExtra("level", level);
         Log.d("왜그러니2", ""+level);
-        PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
         return pi;
     }
 
@@ -367,7 +361,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         i.putExtra("music", mu);
         i.putExtra("ring", ring);
         i.putExtra("cnt", cnt);
-        PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
         return pi;
     }
 

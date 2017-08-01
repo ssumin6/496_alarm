@@ -3,20 +3,28 @@ package kaist.alarm;
 import android.*;
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -34,6 +42,9 @@ public class BasicAlarm extends AppCompatActivity{
     Uri mu;
     String musicType;
     String ringType;
+    String phone;
+    String room;
+    boolean isGroup;
     Vibrator vibrator;
 
     @Override
@@ -71,7 +82,14 @@ public class BasicAlarm extends AppCompatActivity{
         Button c = (Button) findViewById(R.id.reset2);
         c.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                resetAlarm();
+                if(isGroup&& room!= null){
+                    String url = "http://52.79.200.191:8080/room_user/"+room+"&&"+phone;
+                    Log.d("WHOAREYOU", url);
+                    new NetworkTask2().execute(url,"POST");
+                    ALLWAKEUP();
+                }else{
+                    resetAlarm();
+                }
             }
         });
 
@@ -79,6 +97,10 @@ public class BasicAlarm extends AppCompatActivity{
         Intent intent = getIntent();
         musicType = intent.getStringExtra("music");
         ringType = intent.getStringExtra("ring");
+        isGroup = intent.getBooleanExtra("group",false);
+        phone = intent.getStringExtra("phone");
+        room = intent.getStringExtra("room");
+
         if (ringType.equals("벨소리")) {
             musicSelect();
         } else if(ringType.equals("진동")){
@@ -149,6 +171,57 @@ public class BasicAlarm extends AppCompatActivity{
         vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(new long[]{500, 2000},0);
 
+    }
+    private void ALLWAKEUP(){
+        String url = "http://52.79.200.191:8080/room_wakeup/"+room;
+        try {
+            String xrxr = new NetworkTask2().execute(url, "GET").get();
+            JSONObject json = new JSONObject(xrxr);
+            String who = (String)json.get("message");
+            if (who.equals("all wake up")){
+                resetAlarm();
+            }else{
+                final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getApplicationContext());
+                alertBuilder.setTitle(who+"\n 가 일어나지 않아서 알람을 끌 수 없습니다.").setCancelable(false).setPositiveButton("새로고침", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        ALLWAKEUP();
+                    }
+                });
+                // 다이얼로그 생성
+                alertBuilder.show();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    class NetworkTask2 extends AsyncTask<String, Void, String> {
+
+        private String url;
+
+        @Override
+        protected String doInBackground(String... params){
+            Log.d("serverConnection","doInBackground()");
+            url = params[0];
+            Log.d("WHOAREYOU", url);
+            Log.d("serverConnection","NetworkTask2 in BASICALARMG.class");
+            String result;
+            RequestHttpGeneral requestHttpURLConnection = new RequestHttpGeneral();
+            try{
+                result = requestHttpURLConnection.request(url, params[1]);
+                return result;
+            }catch(IOException e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+        @Override
+        protected  void onPreExecute(){super.onPreExecute();}
+
+        @Override
+        protected  void onPostExecute(String str){super.onPostExecute(str);}
     }
 
 }
