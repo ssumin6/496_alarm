@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     last = sese;
                     boolean what= Boolean.parseBoolean(tokens[1]);
                     Alarm one = new Alarm(sese,tokens[0]);
+                    one.setAlarm_type(tokens[3]);
                     one.setOpen(what);
                     toPut.add(one);
                 alarm_request_code = last+1;
@@ -227,8 +228,9 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK){
                 int code = data.getIntExtra("alarm_request_code",0);
                 String te = data.getStringExtra("time_text");
+                String alarm_type = data.getStringExtra("alarm_type");
                 Alarm newAlarm = new Alarm(code, te);
-                Log.d("REQUESTCODe",""+code);
+                newAlarm.setAlarm_type(alarm_type);
                 mAdapter.add(newAlarm);
                 mAdapter.notifyDataSetChanged();
             }
@@ -257,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
             testStr= "";
             for (int i=0; i<temp.size(); i++){
                 Alarm who = temp.get(i);
-                testStr = testStr + who.time_text+"&"+Boolean.toString(who.open)+"&"+Integer.toString(who.pending_list_index)+"\n";
+                testStr = testStr + who.time_text+"&"+Boolean.toString(who.open)+"&"+Integer.toString(who.pending_list_index)+"&"+who.alarm_type+"\n";
             }
         }else{
             testStr = "";

@@ -124,6 +124,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("time_text",tem);
                 returnIntent.putExtra("alarm_request_code",requestCode);
+                returnIntent.putExtra("alarm_type",alarm_kind);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();//이 액티비티 종료. 아까 main으로 돌아감
             }
