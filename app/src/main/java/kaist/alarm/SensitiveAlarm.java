@@ -154,7 +154,7 @@ public class SensitiveAlarm extends AppCompatActivity implements SensorEventList
                     if(count <= COUNT) {
                         Log.i("kmsTest", "Shake");
                         count ++;
-                        txv.setText(Integer.toString(count)+"번 흔들어!" + "<br />" + "<br />" + Integer.toString(count)+"번 : 계속 흔들어!");
+                        txv.setText(Integer.toString(count)+"번 흔들어!\n\n" + Integer.toString(count)+"번 : 계속 흔들어!");
                     } else{
                         Log.i("엥벌써나옴?","?");
                         resetAlarm();
