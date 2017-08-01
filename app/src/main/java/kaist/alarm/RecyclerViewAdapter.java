@@ -26,7 +26,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
     private Context mContext;
     private ArrayList<Alarm> mItems;
     private int last_position;
-    private AlarmManager manager;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -44,7 +43,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
         mContext = context;
         mItems = items;
         last_position = items.size()-1;
-        manager= (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
     }
 
     @Override
@@ -64,15 +62,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
     public void onItemRemove(int position) {
         Alarm deleteItem = mItems.get(position);
         int code= deleteItem.pending_list_index;
+        Log.d("DeleteALARM", mItems.get(position).time_text);
         Log.d("Delete","occurred");
         mItems.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();
 
+        AlarmManager mManager = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
+
         //알람 deletion
-        Intent temp = new Intent();
-        PendingIntent sender = PendingIntent.getBroadcast(mContext, code, temp, 0);
-        manager.cancel(sender);
+        Intent temp = new Intent(mContext, BasicAlarm.class);
+        PendingIntent pi = PendingIntent.getActivity(mContext, code, temp, 0);
+        mManager.cancel(pi);
+        pi.cancel();
 
         last_position -=1;
     }

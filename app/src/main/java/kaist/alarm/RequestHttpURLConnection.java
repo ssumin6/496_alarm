@@ -27,6 +27,7 @@ public class RequestHttpURLConnection {
             urlconne = (HttpURLConnection)url.openConnection();
 
             urlconne.setRequestMethod("POST");
+            urlconne.setConnectTimeout(10000);
             urlconne.setRequestProperty("Accept-Charset","UTF-8");
             urlconne.setRequestProperty("Content-Type","application/json");
 

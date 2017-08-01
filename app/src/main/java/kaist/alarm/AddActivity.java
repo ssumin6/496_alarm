@@ -27,16 +27,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
-import android.widget.TimePicker.OnTimeChangedListener;
 /**
  * Created by q on 2017-07-28.
  */
@@ -52,6 +49,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private AlarmManager mManager;
     private ArrayList<Friend> group_friend;
     public static MediaPlayer mMediaPlayer;
+    private PendingIntent pi;
 
     private int requestCode;
     private final int FRIEND_ADD =1083;
@@ -190,44 +188,17 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
     // 알람 저장
     public void saveAlarm(){
-        int hour, min;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            hour = timePicker.getHour();
-            Log.d("HOUR",""+hour);
-            min = timePicker.getMinute();
-        }else{
-            hour = timePicker.getCurrentHour();
-            min = timePicker.getCurrentMinute();
-        }
-        mCalendar.set(Calendar.HOUR, hour);
-        mCalendar.set(Calendar.MINUTE, min);
         //Calendar의 값을 string으로 변경
+
+        Log.d("WHOAREYOU",mCalendar.toString());
 
         DateFormat format = new SimpleDateFormat("aa hh:mm");
         Date date = mCalendar.getTime();
 
         tem = format.format(date);
-        /*
-        if (hour > 12){
-            tem = "PM";
-            hour -= 12;
-        }else{
-            tem = "AM";
-        }
-        if (hour <10){
-            tem = tem +" 0"+hour+":";
-        }else{
-            tem = tem +" "+hour+":";
-        }
-        if (min<10){
-            tem = tem +"0"+min;
-        }else{
-            tem = tem +min;
-        }*/
 
         Log.d("Time",tem);
         //여기서 pendingIntent 생성, requestCode로 무조건 생성.
-        //manager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent);
 
         if(group_friend!= null &&group_allow_box.isChecked()&& group_friend.size()>1){
             sendGroupAlarm(alarm_kind, tem);//group 알람인 경우 생성된다.
@@ -258,25 +229,25 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     //기능에 따라 서로 다른 pendingintent 설정
     private PendingIntent pendingIntent1() {
         Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
-        PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, 0);
+        pi = PendingIntent.getActivity(this, requestCode, i, 0);
         return pi;
     }
 
     private PendingIntent pendingIntent2() {
         Intent i = new Intent(getApplicationContext(), AudioAlarm.class);
-        PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, 0);
+        pi = PendingIntent.getActivity(this, requestCode, i, 0);
         return pi;
     }
 
     private PendingIntent pendingIntent3() {
         Intent i = new Intent(getApplicationContext(), MathAlarm.class);
-        PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, 0);
+        pi = PendingIntent.getActivity(this, requestCode, i, 0);
         return pi;
     }
 
     private PendingIntent pendingIntent4() {
         Intent i = new Intent(getApplicationContext(), SensitiveAlarm.class);
-        PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, 0);
+        pi = PendingIntent.getActivity(this, requestCode, i, 0);
         return pi;
     }
 
@@ -284,7 +255,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
         mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         mCalendar.set(Calendar.MINUTE, minute);
-        Log.i("HelloAlarmActivity", mCalendar.getTime().toString());
     }
 
     private void sendGroupAlarm(String alarm_type, String calToTime){

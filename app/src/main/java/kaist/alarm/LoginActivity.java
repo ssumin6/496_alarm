@@ -48,7 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         switch (requestCode){
             case PERMISSION_REQUEST_READ:
                 if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    return;
+                    callback = new SessionCallback();
+                    Session.getCurrentSession().addCallback(callback);
                 }else{
 
                 }

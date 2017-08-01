@@ -1,7 +1,9 @@
 package kaist.alarm;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private String room_id;
     private String alarm_type;
     private String time;
+    private AlarmManager mManager;
     private boolean isClicked = false;
     // 뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨뀨
     @Override
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter = new RecyclerViewAdapter(getApplicationContext(), toPut);
         mRecyclerView.setAdapter(mAdapter);
+
+        mManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelperCallback(mAdapter, getApplicationContext()));
         helper.attachToRecyclerView(mRecyclerView);
@@ -156,6 +161,36 @@ public class MainActivity extends AppCompatActivity {
                                 Date date = sdf.parse(time);
                                 Calendar cal = Calendar.getInstance();
                                 cal.setTime(date);
+                                PendingIntent pi;
+                                Intent i;
+
+                                if (alarm_type.equals("기본알람")) {
+                                    i= new Intent(getApplicationContext(), BasicAlarm.class);
+                                    pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
+                                    AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
+                                    mManager.setAlarmClock(info, pi);
+                                    Log.i("HelloAlarmActivity", cal.getTime().toString());
+
+                                } else if (alarm_type.equals("음성알람")) {
+                                    i= new Intent(getApplicationContext(), AudioAlarm.class);
+                                    pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
+                                    AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(),pi);
+                                    mManager.setAlarmClock(info, pi);
+                                    Log.i("HelloAlarmActivity", cal.getTime().toString());
+
+                                } else if (alarm_type.equals("수학문제")) {
+                                    i= new Intent(getApplicationContext(), MathAlarm.class);
+                                    pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
+                                    AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
+                                    mManager.setAlarmClock(info, pi);
+                                    Log.i("HelloAlarmActivity", cal.getTime().toString());
+                                } else if (alarm_type.equals("흔들기")) {
+                                    i= new Intent(getApplicationContext(), SensitiveAlarm.class);
+                                    pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
+                                    AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
+                                    mManager.setAlarmClock(info, pi);
+                                    Log.i("HelloAlarmActivity", cal.getTime().toString());
+                                }
 
                             }catch(ParseException e){
                                 e.printStackTrace();
@@ -164,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
                             new_one.setAlarm_type(alarm_type);
                             mAdapter.add(new_one);
                             mAdapter.notifyDataSetChanged();
+
                             alarm_request_code+=1;
                         }
                     }).setNegativeButton("거절",
@@ -192,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                 int code = data.getIntExtra("alarm_request_code",0);
                 String te = data.getStringExtra("time_text");
                 Alarm newAlarm = new Alarm(code, te);
+                Log.d("REQUESTCODe",""+code);
                 mAdapter.add(newAlarm);
                 mAdapter.notifyDataSetChanged();
             }
@@ -230,7 +267,6 @@ public class MainActivity extends AppCompatActivity {
             FileOutputStream fos = new FileOutputStream(savefile);
             fos.write(testStr.getBytes());
             fos.close();
-            Toast.makeText(this, "Save Success", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
         }
     }
