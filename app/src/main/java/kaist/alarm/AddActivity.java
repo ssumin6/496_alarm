@@ -440,7 +440,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         final SeekBar seek = new SeekBar(this);
         seek.setMax(2);
         popDialog.setTitle("난이도를 선택하세요");
-        popDialog.setMessage("하                                  중                                  상");
+        popDialog.setMessage("하                                    중                                    상");
         popDialog.setView(seek);
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -468,9 +468,8 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         final AlertDialog.Builder popDialog2 = new AlertDialog.Builder(this);
         final SeekBar seek2 = new SeekBar(this);
         seek2.setMax(20);
-        seek2.setProgress(5);
         popDialog2.setTitle("횟수를 선택하세요");
-        popDialog2.setMessage("0            5            10           15            20");
+        popDialog2.setMessage("5                     10                     15                     20");
         popDialog2.setView(seek2);
         seek2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
