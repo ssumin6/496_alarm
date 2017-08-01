@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     one.setAlarm_type(tokens[3]);
                     one.setOpen(what);
                     one.setGroup(isGroup);
-                    one.setRoom_id(tokens[5]);
+                    //one.setRoom_id(tokens[5]);
                     toPut.add(one);
                 alarm_request_code = last+1;
                 Log.v(null, "" + toPut.toString());
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
             testStr= "";
             for (int i=0; i<temp.size(); i++){
                 Alarm who = temp.get(i);
-                testStr = testStr + who.time_text+"&"+Boolean.toString(who.open)+"&"+Integer.toString(who.pending_list_index)+"&"+who.alarm_type+"&"+Boolean.toString(who.isGroup)+"&"+who.Room_id+"\n";
+                testStr = testStr + who.time_text+"&"+Boolean.toString(who.open)+"&"+Integer.toString(who.pending_list_index)+"&"+who.alarm_type+"&"+Boolean.toString(who.isGroup)+"\n";
             }
         }else{
             testStr = "";
