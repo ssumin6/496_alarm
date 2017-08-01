@@ -2,8 +2,11 @@ package kaist.alarm;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -12,6 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,8 +24,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,20 +48,23 @@ import java.util.GregorianCalendar;
 public class AddActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, TimePicker.OnTimeChangedListener{
 
     private GregorianCalendar mCalendar;
-    private ImageButton addFriends, addMusic;
+    private ImageButton addFriends;
+    private Button addMusic;
     private Button saveButton;
+    private int mathproblem_level, shakeit;
     private CheckBox group_allow_box;
     private TimePicker timePicker;
-    private Spinner alarmSelector, alarmSelector2;
+    private Button alarmSelector, alarmSelector2,alarmSelector3;
     private AlarmManager mManager;
     private ArrayList<Friend> group_friend;
     public static MediaPlayer mMediaPlayer;
     private PendingIntent pi;
 
+    private int  h=12,m=12;
     private int requestCode;
     private final int FRIEND_ADD =1083;
     private final int MUSIC_ADD = 2017;
-    private String alarm_kind, alarm_kind2;
+    private String alarm_kind="기본알람", alarm_kind2;
     private String my_Phone;//내 핸드폰 전화번호
     private String tem;//시간 표시
 
@@ -78,29 +88,74 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         mCalendar.set(GregorianCalendar.SECOND, 0);
 
         mManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        /////////////////////////////////////////////////////////////////////////////////////////////////
 
-        alarmSelector = (Spinner)findViewById(R.id.spinner);
-        alarmSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        final CharSequence[] items = { "기본알람", "음성알람", "수학문제", "흔들기" };
+        alarmSelector = (Button) findViewById(R.id.alarmtype);
+        alarmSelector.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-                alarm_kind = parent.getItemAtPosition(position).toString();
+            public void onClick(View v) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(AddActivity.this);
+                alertBuilder.setTitle("항목중에 하나를 선택하세요.");
+                // 제목셋팅
+                alertBuilder.setItems(items,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+
+                                if(items[id].equals("흔들기")){
+                                    // 이 함수 실행후 shakeit에 선택 결과가 저장됨.
+                                    ShowDialog_shake();
+                                }
+                                if(items[id].equals("수학문제")){
+                                    // 이 함수 실행후 mathproblem_level에 선택 결과가 저장됨. (0,1,2)
+                                    ShowDialog_mathproblem();
+                                }
+                                alarm_kind = (String) items[id];
+                                String s = "  알람 해제 방법\n   " + (String) items[id]+"  ";
+                                SpannableString ss1 = new SpannableString(s);
+                                ss1.setSpan(new RelativeSizeSpan(0.7f),11,18,0);
+                                alarmSelector.setText(ss1);
+                                dialog.cancel();
+                            }
+                        });
+                // 다이얼로그 생성
+                alertBuilder.show();
             }
-            public void onNothingSelected(AdapterView<?> parent){
-                alarm_kind = null;
+        });
+        ////////////////////////////////////////////////////////////////////////////////
+
+        final CharSequence[] items2 = { "벨", "진동", "벨/진동"};
+        alarmSelector2 = (Button) findViewById(R.id.belltype);
+        alarmSelector2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(AddActivity.this);
+                alertBuilder.setTitle("항목중에 하나를 선택하세요.");
+                // 제목셋팅
+                alertBuilder.setItems(items2,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+
+                                // 프로그램을 종료한다
+                                Toast.makeText(getApplicationContext(),
+                                        items2[id] + " 선택했습니다.",
+                                        Toast.LENGTH_SHORT).show();
+                                alarm_kind2 = (String) items2[id];
+                                String s = "  벨/진동 설정\n   " +(String) items2[id]+"    ";
+                                SpannableString ss1 = new SpannableString(s);
+                                ss1.setSpan(new RelativeSizeSpan(0.7f),10,18,0);
+                                alarmSelector2.setText(ss1);
+                                dialog.dismiss();
+                            }
+                        });
+
+                // 다이얼로그 생성
+                alertBuilder.show();
             }
         });
 
-        // 벨/진동 선택
-        alarmSelector2 = (Spinner) findViewById(R.id.spinner2);
-        alarmSelector2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                alarm_kind2 = parent.getItemAtPosition(position).toString();
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-                alarm_kind2 = null;
-            }
-        });
 
         addFriends = (ImageButton)findViewById(R.id.imageButton);
         addFriends.setOnClickListener(new View.OnClickListener() {
@@ -129,14 +184,19 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                 finish();//이 액티비티 종료. 아까 main으로 돌아감
             }
         });
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 일시설정 클래스로 현재 시각을 설정
-        timePicker = (TimePicker)findViewById(R.id.timePicker);
-        timePicker.setHour(mCalendar.get(Calendar.HOUR_OF_DAY));
-        timePicker.setMinute(mCalendar.get(Calendar.MINUTE));
-        timePicker.setOnTimeChangedListener(this);
+        alarmSelector3 = (Button) findViewById(R.id.timePickerButton);
+        final TimePickerDialog tpd = new TimePickerDialog(this, listener, mCalendar.HOUR_OF_DAY, mCalendar.MINUTE, true);
+        alarmSelector3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tpd.show();
+            }
+        });
 
         // 내장 음악 선택
-        addMusic = (ImageButton) findViewById(R.id.imageButton2);
+        addMusic = (Button) findViewById(R.id.bellpick);
         addMusic.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -144,6 +204,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                 startActivityForResult(i,MUSIC_ADD);
             }
         });
+        /////////////////////////////////////////////////////////////////////////////////
 
     }
     @Override
@@ -186,10 +247,33 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             addFriends.setEnabled(false);
         }
     }
+    private TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            h = hourOfDay;
+            m = minute;
+            String s = "  시간 설정\n   " + h + "시 " + m + "분         ";
+            SpannableString ss1 = new SpannableString(s);
+            ss1.setSpan(new RelativeSizeSpan(0.7f),8,19,0);
+            alarmSelector3.setText(ss1);
+            Toast.makeText(getApplicationContext(), h + "시 " + m + "분", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     // 알람 저장
     public void saveAlarm(){
         //Calendar의 값을 string으로 변경
+        int hour, min;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            hour = h;
+            Log.d("HOUR",""+hour);
+            min = m;
+        }else{
+            hour = timePicker.getCurrentHour();
+            min = timePicker.getCurrentMinute();
+        }
+        mCalendar.set(Calendar.HOUR, hour);
+        mCalendar.set(Calendar.MINUTE, min);
 
         Log.d("WHOAREYOU",mCalendar.toString());
 
@@ -311,5 +395,60 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
         @Override
         protected  void onPostExecute(String str){super.onPostExecute(str);}
+    }
+    public void ShowDialog_mathproblem()
+    {
+        final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
+        final SeekBar seek = new SeekBar(this);
+        seek.setMax(2);
+        popDialog.setTitle("난이도를 선택하세요");
+        popDialog.setMessage("하                           중                           상");
+        popDialog.setView(seek);
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
+                //Do something here with new value
+                mathproblem_level = progress;
+            }
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        popDialog.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which){
+                        dialog.dismiss();
+                    }
+                });
+        popDialog.create();
+        popDialog.show();
+    }
+    public void ShowDialog_shake()
+    {
+        final AlertDialog.Builder popDialog2 = new AlertDialog.Builder(this);
+        final SeekBar seek2 = new SeekBar(this);
+        seek2.setMax(20);
+        popDialog2.setTitle("횟수를 선택하세요");
+        popDialog2.setMessage("0            5            10           15            20");
+        popDialog2.setView(seek2);
+        seek2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
+                //Do something here with new value
+                shakeit = progress;
+
+            }
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        popDialog2.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which){
+                        dialog.dismiss();
+                    }
+                });
+        popDialog2.create();
+        popDialog2.show();
     }
 }

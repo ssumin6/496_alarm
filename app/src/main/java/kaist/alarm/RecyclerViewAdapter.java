@@ -71,13 +71,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
         AlarmManager mManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         String type = item.alarm_type;
         int request_Code = item.pending_list_index;
-        SimpleDateFormat sdf = new SimpleDateFormat("aa hh:mm");
-        try {
-            Date date = sdf.parse(item.time_text);
+        try{
+            String tem = item.time_text;
+            int hour = Integer.parseInt(tem.substring(3,5));
+            int min = Integer.parseInt(tem.substring(6,8));
+            boolean am= tem.substring(0,2).equals("오전");
             GregorianCalendar cal = new GregorianCalendar();
             cal.set(GregorianCalendar.SECOND,0);
-            cal.setTime(date);
-            date.toString();
+            cal.set(GregorianCalendar.HOUR, hour);
+            cal.set(GregorianCalendar.MINUTE, min);
+
+            if (am){
+                cal.set(GregorianCalendar.AM_PM,GregorianCalendar.AM);
+            }else{
+                cal.set(GregorianCalendar.AM_PM,GregorianCalendar.PM);
+            }
             Log.d("WHOAREYOU",cal.toString());
             Intent i;
             if (type.equals("기본알람")) {
@@ -94,13 +102,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
             if (check){
                 AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
                 mManager.setAlarmClock(info,pi);
+                Log.d("WHOAREYOUd", (new Time(info.getTriggerTime())).toString());
                 Toast.makeText(mContext,"SET ALARM+"+item.time_text, Toast.LENGTH_SHORT).show();
             }else{
                 mManager.cancel(pi);
                 pi.cancel();
                 Toast.makeText(mContext,"DESTORY ALARM+"+item.time_text, Toast.LENGTH_SHORT).show();
             }
-        }catch(ParseException e){
+        }catch(Exception e){
             e.printStackTrace();
         }
     }

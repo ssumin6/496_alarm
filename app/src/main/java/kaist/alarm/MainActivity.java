@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -157,13 +159,21 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             // 'YES'
                             //알람매니저로 세팅도 해야함
-                            SimpleDateFormat sdf = new SimpleDateFormat("aa hh:mm");
                             try {
-                                Date date = sdf.parse(time);
-                                Calendar cal = Calendar.getInstance();
-                                cal.setTime(date);
-                                PendingIntent pi;
+                                int hour = Integer.parseInt(time.substring(3,5));
+                                int min = Integer.parseInt(time.substring(6,8));
+                                boolean am = time.substring(0,2).equals("오전");
+                                GregorianCalendar cal = new GregorianCalendar();
+                                cal.set(GregorianCalendar.SECOND,0);
+                                cal.set(GregorianCalendar.HOUR,hour);
+                                cal.set(GregorianCalendar.MINUTE, min);
+                                if (am){
+                                    cal.set(GregorianCalendar.AM_PM, GregorianCalendar.AM);
+                                }else{
+                                    cal.set(GregorianCalendar.AM_PM,GregorianCalendar.PM);
+                                }
                                 Intent i;
+                                PendingIntent pi;
 
                                 if (alarm_type.equals("기본알람")) {
                                     i= new Intent(getApplicationContext(), BasicAlarm.class);
@@ -193,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i("HelloAlarmActivity", cal.getTime().toString());
                                 }
 
-                            }catch(ParseException e){
+                            }catch(Exception e){
                                 e.printStackTrace();
                             }
                             Alarm new_one = new Alarm(alarm_request_code, time);

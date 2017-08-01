@@ -1,116 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout2"
-        android:weightSum="1">
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.24"
-            android:gravity="center"
-            android:text="알람 종류" />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:entries="@array/alarm_name_list"/>
-
-        <Spinner
-            android:id="@+id/spinner2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:entries="@array/alarm_name_list2"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView02"
-        android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:gravity="center"
-        android:text="시간 설정" />
-
-    <TimePicker
-        android:id="@+id/timePicker"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:timePickerMode="spinner" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout"
-        android:layout_above="@+id/linearLayout3"
-        android:weightSum="1">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/timePickerButton"
+            android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:gravity="center"
-            android:text="그룹설정"
-            android:layout_weight="0.98" />
+            android:background="@drawable/button_setting"
+            android:entries="@array/alarm_name_list"
+            android:gravity="left"
+            android:textSize="20dp"
+            android:text="  시간 설정"
+            android:textAllCaps="false"
 
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center" />
+            />
+        <Button
+            android:id="@+id/belltype"
+            android:gravity="left"
+            android:textSize="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/button_setting"
+            android:text="  벨/진동 선택"
+            android:entries="@array/alarm_name_list2"
+            android:textAllCaps="false"
+            />
+        <Button
+            android:id="@+id/bellpick"
+            android:gravity="left"
+            android:textSize="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/button_setting"
+            android:text="  벨소리 선택"
+            android:entries="@array/alarm_name_list2"
+            android:textAllCaps="false"
+            />
 
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="72dp"
+        <Button
+            android:textSize="20dp"
+            android:gravity="left"
+            android:id="@+id/alarmtype"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/button_setting"
+            android:entries="@array/alarm_name_list"
+            android:textAllCaps="false"
+            android:text="  알람 해제 방법"
+
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_group_add_white" />
+            android:orientation="horizontal"
+            android:id="@+id/linearLayout"
+            android:layout_above="@+id/linearLayout3"
+            android:weightSum="1">
 
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_group_add_white" />
+            <TextView
+                android:textColor="#000"
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:text="그룹설정"
+                android:layout_weight="0.98" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@drawable/ic_group_add_white" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
     <Button
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="50dp"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="450dp"
         android:text="저장" />
+</RelativeLayout>
+    <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_above="@+id/save_button"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="97dp"
-        android:id="@+id/linearLayout3">
+            android:orientation="horizontal"
+            android:id="@+id/linearLayout2"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.24"
+                android:gravity="center"
+                android:text="알람 종류" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:entries="@array/alarm_name_list"/>
+
+            <Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:entries="@array/alarm_name_list2"/>
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="39dp"
-            android:layout_weight="1"
+            android:id="@+id/textView02"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
             android:gravity="center"
-            android:text="요일반복" />
+            android:text="시간 설정" />
 
-    </LinearLayout>
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:timePickerMode="spinner" />
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/linearLayout"
+            android:layout_above="@+id/linearLayout3"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:gravity="center"
+                android:text="그룹설정"
+                android:layout_weight="0.98" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@drawable/ic_group_add_white" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@drawable/ic_group_add_white" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="50dp"
+            android:text="저장" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_above="@+id/save_button"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="97dp"
+            android:id="@+id/linearLayout3">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="39dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="요일반복" />
+
+        </LinearLayout>-->
+
