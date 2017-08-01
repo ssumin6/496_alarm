@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,11 +32,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private String dirPath;
     private String room_id;
     private String alarm_type;
+    private String manager;
     private String time;
     private AlarmManager mManager;
     private boolean isClicked = false;
@@ -82,9 +83,12 @@ public class MainActivity extends AppCompatActivity {
                     int sese = Integer.parseInt(tokens[2]);
                     last = sese;
                     boolean what= Boolean.parseBoolean(tokens[1]);
+                    boolean isGroup = Boolean.parseBoolean(tokens[4]);
                     Alarm one = new Alarm(sese,tokens[0]);
                     one.setAlarm_type(tokens[3]);
                     one.setOpen(what);
+                    one.setGroup(isGroup);
+                    one.setRoom_id(tokens[5]);
                     toPut.add(one);
                 alarm_request_code = last+1;
                 Log.v(null, "" + toPut.toString());
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         time="";
         alarm_type="";
         String message="";
-
+        manager = "";
 
         Intent alertss = getIntent();
         if (alertss != null){
@@ -148,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 message=alertss.getStringExtra("message");
                 alarm_type = alertss.getStringExtra("alarm_type");
                 time = alertss.getStringExtra("time");
+                manager = alertss.getStringExtra("manager");
             }
         }
 
@@ -176,7 +181,9 @@ public class MainActivity extends AppCompatActivity {
                                 PendingIntent pi;
 
                                 if (alarm_type.equals("기본알람")) {
-                                    i= new Intent(getApplicationContext(), BasicAlarm.class);
+                                    i= new Intent(getApplicationContext(), BasicAlarmG.class);
+                                    i.putExtra("room",room_id);
+                                    i.putExtra("phone",phonenumber);
                                     pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
                                     AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
                                     mManager.setAlarmClock(info, pi);
@@ -208,9 +215,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                             Alarm new_one = new Alarm(alarm_request_code, time);
                             new_one.setAlarm_type(alarm_type);
+                            new_one.setGroup(true);
+                            new_one.setManager(manager);
+                            new_one.setRoom_id(room_id);
                             mAdapter.add(new_one);
                             mAdapter.notifyDataSetChanged();
-
                             alarm_request_code+=1;
                         }
                     }).setNegativeButton("거절",
@@ -239,8 +248,15 @@ public class MainActivity extends AppCompatActivity {
                 int code = data.getIntExtra("alarm_request_code",0);
                 String te = data.getStringExtra("time_text");
                 String alarm_type = data.getStringExtra("alarm_type");
+                boolean isGroup = data.getBooleanExtra("group",false);
                 Alarm newAlarm = new Alarm(code, te);
+                if (isGroup){
+                    String room = data.getStringExtra("room");
+                    newAlarm.setManager(phonenumber);
+                    newAlarm.setRoom_id(room);
+                }
                 newAlarm.setAlarm_type(alarm_type);
+                newAlarm.setGroup(isGroup);
                 mAdapter.add(newAlarm);
                 mAdapter.notifyDataSetChanged();
             }
@@ -269,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
             testStr= "";
             for (int i=0; i<temp.size(); i++){
                 Alarm who = temp.get(i);
-                testStr = testStr + who.time_text+"&"+Boolean.toString(who.open)+"&"+Integer.toString(who.pending_list_index)+"&"+who.alarm_type+"\n";
+                testStr = testStr + who.time_text+"&"+Boolean.toString(who.open)+"&"+Integer.toString(who.pending_list_index)+"&"+who.alarm_type+"&"+Boolean.toString(who.isGroup)+"&"+who.Room_id+"\n";
             }
         }else{
             testStr = "";

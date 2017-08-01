@@ -26,11 +26,13 @@ public class FirebaseMessagingService extends  com.google.firebase.messaging.Fir
         String alarm_type = remoteMessage.getData().get("alarmtype]");
         String time = remoteMessage.getData().get("time]");
         String room_id = remoteMessage.getData().get("roomid]");
+        String manager = remoteMessage.getData().get("manager]");
 
         intent.putExtra("room_id",room_id);
         intent.putExtra("time", time);
         intent.putExtra("alarm_type",alarm_type);
         intent.putExtra("message", message);
+        intent.putExtra("manager",manager);
         if (message == null){
             intent.putExtra("AlertSET",3);
         }else{

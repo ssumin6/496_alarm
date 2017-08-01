@@ -4,26 +4,20 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v4.view.ViewPager;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.nio.channels.AlreadyBoundException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.sql.Time;
 import java.util.GregorianCalendar;
 
@@ -130,25 +124,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
     @Override
     public void onItemRemove(int position) {
         Alarm deleteItem = mItems.get(position);
-        int code= deleteItem.pending_list_index;
-        boolean do_ = deleteItem.open;
-        Log.d("DeleteALARM", mItems.get(position).time_text);
-        Log.d("Delete","occurred");
-        mItems.remove(position);
-        notifyItemRemoved(position);
-        notifyDataSetChanged();
+        boolean notOkay= deleteItem.isGroup;//group 알람이면 true
+        if (!notOkay) {
+            int code = deleteItem.pending_list_index;
+            boolean do_ = deleteItem.open;
+            Log.d("DeleteALARM", mItems.get(position).time_text);
+            Log.d("Delete", "occurred");
+            mItems.remove(position);
+            notifyItemRemoved(position);
+            notifyDataSetChanged();
 
-        AlarmManager mManager = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager mManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 
-        if(do_){
-            //알람 deletion
-            Intent temp = new Intent(mContext, BasicAlarm.class);
-            PendingIntent pi = PendingIntent.getActivity(mContext, code, temp, 0);
-            mManager.cancel(pi);
-            pi.cancel();
+            if (do_) {
+                //알람 deletion
+                Intent temp = new Intent(mContext, BasicAlarm.class);
+                PendingIntent pi = PendingIntent.getActivity(mContext, code, temp, 0);
+                mManager.cancel(pi);
+                pi.cancel();
+            }
+
+            last_position -= 1;
+        }else{
+            Toast.makeText(mContext, "그룹 알람은 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
-
-        last_position -=1;
     }
 
     @Override
@@ -184,8 +183,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
         notifyItemInserted(last_position);
     }
 
-
     public ArrayList<Alarm> getAlarmList(){
         return mItems;
     }
+
 }

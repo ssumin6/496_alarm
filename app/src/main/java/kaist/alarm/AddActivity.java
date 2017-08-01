@@ -55,6 +55,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private GregorianCalendar mCalendar;
     private ImageButton addFriends ;
     private Button addMusic, saveButton;
+    private int mathproblem_level, shakeit;
     private CheckBox group_allow_box;
     private TimePicker timePicker;
     private Button alarmSelector, alarmSelector2,alarmSelector3;
@@ -71,6 +72,8 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private String tem;//시간 표시
     private String ring;
     private String mu;
+    private String room_id;
+    private boolean isGroup = false;
     private int level;
     private int cnt;
 
@@ -113,12 +116,10 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                                 if (items[id].equals("흔들기")) {
                                     // 이 함수 실행후 shakeit에 선택 결과가 저장됨.
                                     ShowDialog_shake();
-
                                 }
                                 if (items[id].equals("수학문제")) {
                                     // 이 함수 실행후 mathproblem_level에 선택 결과가 저장됨. (0,1,2)
                                     ShowDialog_mathproblem();
-
                                 }
                                 alarm_kind = (String) items[id];
                                 String s = "  알람 해제 방법\n   " + (String) items[id] + "  ";
@@ -153,7 +154,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                                 }else{
                                     ring = "벨소리+진동";
                                 }
-
                                 // 프로그램을 종료한다
                                 Toast.makeText(getApplicationContext(),
                                         items2[id] + " 선택했습니다.",
@@ -161,7 +161,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                                 alarm_kind2 = (String) items2[id];
                                 String s = "  벨/진동 설정\n   " + (String) items2[id] + "    ";
                                 SpannableString ss1 = new SpannableString(s);
-                                ss1.setSpan(new RelativeSizeSpan(0.7f), 10, 19, 0);
+                                ss1.setSpan(new RelativeSizeSpan(0.7f), 10, 18, 0);
                                 alarmSelector2.setText(ss1);
                                 dialog.dismiss();
                             }
@@ -196,6 +196,10 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                 returnIntent.putExtra("time_text",tem);
                 returnIntent.putExtra("alarm_request_code",requestCode);
                 returnIntent.putExtra("alarm_type",alarm_kind);
+                returnIntent.putExtra("group",isGroup);
+                if (isGroup){
+                    returnIntent.putExtra("room",room_id);
+                }
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();//이 액티비티 종료. 아까 main으로 돌아감
             }
@@ -283,7 +287,8 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         //manager.set(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), pendingIntent);
 
         if(group_friend!= null &&group_allow_box.isChecked()&& group_friend.size()>1){
-            sendGroupAlarm(alarm_kind, tem);//group 알람인 경우 생성된다.
+            sendGroupAlarm(alarm_kind, tem);
+            isGroup = true;//group 알람인 경우 생성된다.
         }
         // spinner에 따라 다른 알람이 울림
 
@@ -310,11 +315,30 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
     //기능에 따라 서로 다른 pendingintent 설정
     private PendingIntent pendingIntent1() {
-        Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
-        i.putExtra("music", mu);
-        i.putExtra("ring", ring);
-        PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
-        return pi;
+        if (isGroup) {
+            Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
+            i.putExtra("music", mu);
+            /*
+            try {
+                Log.d("WHOAREYOU","ID: "+room_id);
+                JSONObject json = new JSONObject(room_id);
+                room_id = (String) json.get("m");
+                // spinner에 따라 다른 알람이 울림
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+            i.putExtra("room",room_id);
+            i.putExtra("phone",my_Phone);*/
+            i.putExtra("ring", ring);
+            PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
+            return pi;
+        }else{
+            Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
+            i.putExtra("music", mu);
+            i.putExtra("ring", ring);
+            PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
+            return pi;
+        }
     }
 
     private PendingIntent pendingIntent2() {
@@ -353,7 +377,11 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
     private void sendGroupAlarm(String alarm_type, String calToTime){
         String url = "http://52.79.200.191:8080/room";
-        new NetworkTask().execute(url, alarm_type, calToTime);
+        try {
+            room_id = new NetworkTask().execute(url, alarm_type, calToTime).get();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     class NetworkTask extends AsyncTask<String, Void, String> {
 
@@ -393,6 +421,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
             try{
                 result = requestHttpURLConnection.request(url, values);
+                room_id= result;
                 return result;
             }catch(IOException e){
                 e.printStackTrace();
@@ -405,7 +434,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         @Override
         protected  void onPostExecute(String str){super.onPostExecute(str);}
     }
-
     public void ShowDialog_mathproblem() {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
         final SeekBar seek = new SeekBar(this);
@@ -417,7 +445,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //Do something here with new value
                 level = progress;
-
             }
 
             public void onStartTrackingTouch(SeekBar arg0) {
@@ -442,7 +469,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         seek2.setMax(20);
         seek2.setProgress(5);
         popDialog2.setTitle("횟수를 선택하세요");
-        popDialog2.setMessage("5                      10                       15                      20");
+        popDialog2.setMessage("0            5            10           15            20");
         popDialog2.setView(seek2);
         seek2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
