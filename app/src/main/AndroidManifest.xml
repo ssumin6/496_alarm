@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name=".GlobalApplication"
@@ -36,6 +37,7 @@
         <activity android:name=".AudioAlarm"/>
         <activity android:name=".MathAlarm"/>
         <activity android:name=".BasicAlarm"/>
+        <activity android:name=".SensitiveAlarm"/>
 
         <service
             android:name=".FirebaseMessagingService">

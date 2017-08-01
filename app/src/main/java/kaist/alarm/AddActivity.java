@@ -55,7 +55,6 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private GregorianCalendar mCalendar;
     private ImageButton addFriends ;
     private Button addMusic, saveButton;
-    private int mathproblem_level, shakeit;
     private CheckBox group_allow_box;
     private TimePicker timePicker;
     private Button alarmSelector, alarmSelector2,alarmSelector3;
@@ -72,6 +71,8 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private String tem;//시간 표시
     private String ring;
     private String mu;
+    private int level;
+    private int cnt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,10 +113,12 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                                 if (items[id].equals("흔들기")) {
                                     // 이 함수 실행후 shakeit에 선택 결과가 저장됨.
                                     ShowDialog_shake();
+
                                 }
                                 if (items[id].equals("수학문제")) {
                                     // 이 함수 실행후 mathproblem_level에 선택 결과가 저장됨. (0,1,2)
                                     ShowDialog_mathproblem();
+
                                 }
                                 alarm_kind = (String) items[id];
                                 String s = "  알람 해제 방법\n   " + (String) items[id] + "  ";
@@ -131,7 +134,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         });
         ////////////////////////////////////////////////////////////////////////////////
 
-        final CharSequence[] items2 = {"벨", "진동", "벨/진동"};
+        final CharSequence[] items2 = {"벨소리", "진동", "벨소리+진동"};
         alarmSelector2 = (Button) findViewById(R.id.belltype);
         alarmSelector2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +146,13 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int id) {
+                                if (items2[id].equals("벨소리")){
+                                    ring = "벨소리";
+                                }else if (items2[id].equals("진동")) {
+                                    ring = "진동";
+                                }else{
+                                    ring = "벨소리+진동";
+                                }
 
                                 // 프로그램을 종료한다
                                 Toast.makeText(getApplicationContext(),
@@ -151,7 +161,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                                 alarm_kind2 = (String) items2[id];
                                 String s = "  벨/진동 설정\n   " + (String) items2[id] + "    ";
                                 SpannableString ss1 = new SpannableString(s);
-                                ss1.setSpan(new RelativeSizeSpan(0.7f), 10, 18, 0);
+                                ss1.setSpan(new RelativeSizeSpan(0.7f), 10, 19, 0);
                                 alarmSelector2.setText(ss1);
                                 dialog.dismiss();
                             }
@@ -218,7 +228,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
             if (resultCode==Activity.RESULT_OK){
                 group_friend = (ArrayList<Friend>) data.getSerializableExtra("group_list");
             }
-        } else if(requestCode==10){
+        } else if(requestCode==MUSIC_ADD){
             if(resultCode==Activity.RESULT_OK){
                 Uri uriSound=data.getData();
                 mu = uriSound.toString();
@@ -302,6 +312,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private PendingIntent pendingIntent1() {
         Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
         i.putExtra("music", mu);
+        i.putExtra("ring", ring);
         PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
         return pi;
     }
@@ -309,6 +320,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private PendingIntent pendingIntent2() {
         Intent i = new Intent(getApplicationContext(), AudioAlarm.class);
         i.putExtra("music", mu);
+        i.putExtra("ring", ring);
         PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
         return pi;
     }
@@ -316,6 +328,9 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private PendingIntent pendingIntent3() {
         Intent i = new Intent(getApplicationContext(), MathAlarm.class);
         i.putExtra("music", mu);
+        i.putExtra("ring", ring);
+        i.putExtra("level", level);
+        Log.d("왜그러니2", ""+level);
         PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
         return pi;
     }
@@ -323,6 +338,8 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private PendingIntent pendingIntent4() {
         Intent i = new Intent(getApplicationContext(), SensitiveAlarm.class);
         i.putExtra("music", mu);
+        i.putExtra("ring", ring);
+        i.putExtra("cnt", cnt);
         PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
         return pi;
     }
@@ -388,17 +405,19 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         @Override
         protected  void onPostExecute(String str){super.onPostExecute(str);}
     }
+
     public void ShowDialog_mathproblem() {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
         final SeekBar seek = new SeekBar(this);
         seek.setMax(2);
         popDialog.setTitle("난이도를 선택하세요");
-        popDialog.setMessage("하                           중                           상");
+        popDialog.setMessage("하                                  중                                  상");
         popDialog.setView(seek);
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //Do something here with new value
-                mathproblem_level = progress;
+                level = progress;
+
             }
 
             public void onStartTrackingTouch(SeekBar arg0) {
@@ -421,13 +440,14 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         final AlertDialog.Builder popDialog2 = new AlertDialog.Builder(this);
         final SeekBar seek2 = new SeekBar(this);
         seek2.setMax(20);
+        seek2.setProgress(5);
         popDialog2.setTitle("횟수를 선택하세요");
-        popDialog2.setMessage("0            5            10           15            20");
+        popDialog2.setMessage("5                      10                       15                      20");
         popDialog2.setView(seek2);
         seek2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //Do something here with new value
-                shakeit = progress;
+                cnt = progress + 5;
 
             }
 

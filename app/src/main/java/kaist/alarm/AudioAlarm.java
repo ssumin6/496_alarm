@@ -12,8 +12,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -54,6 +56,11 @@ public class AudioAlarm extends AppCompatActivity {
     ArrayList<String> list;
     int j;
     public MediaPlayer mMediaPlayer;
+
+    Uri mu;
+    String musicType;
+    String ringType;
+    Vibrator vibrator;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -125,25 +132,18 @@ public class AudioAlarm extends AppCompatActivity {
             }
         });
 
-        Button c = (Button) findViewById(R.id.reset2);
-        c.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                resetAlarm();
-            }
-        });
 
-        if (mMediaPlayer == null){
-            mMediaPlayer = MediaPlayer.create(this, R.raw.guitar);
-            mMediaPlayer.setLooping(true);
-            mMediaPlayer.start();
-        } else {
-            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                public void onPrepared(MediaPlayer mp) {
-                    mp.setLooping(true);
-                    mp.start();
-                }
-            });
-            mMediaPlayer.prepareAsync();
+
+        Intent intent = getIntent();
+        musicType = intent.getStringExtra("music");
+        ringType = intent.getStringExtra("ring");
+        if (ringType.equals("벨소리")) {
+            musicSelect();
+        } else if(ringType.equals("진동")){
+            vibrate();
+        } else{
+            musicSelect();
+            vibrate();
         }
 
         try{
@@ -215,7 +215,6 @@ public class AudioAlarm extends AppCompatActivity {
         @Override
         public void onResults(Bundle results) {
 
-
             String key = "";
             key = SpeechRecognizer.RESULTS_RECOGNITION;
             ArrayList<String> mResult = results.getStringArrayList(key);
@@ -225,10 +224,7 @@ public class AudioAlarm extends AppCompatActivity {
             rm = rs[0].replaceAll(" ","");
             rm2 = list.get(j).toString().replaceAll(" ", "");
             if (rm.equals(rm2)){
-                txv2.setText("correct!");
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                finish();
+                resetAlarm();
             }
             else{
                 txv2.setText("false!");
@@ -246,11 +242,6 @@ public class AudioAlarm extends AppCompatActivity {
         public void onEvent(int eventType, Bundle params) {
         }
     };
-
-    // 알람의 해제
-    private void resetAlarm(){
-        mMediaPlayer.stop();
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -285,6 +276,69 @@ public class AudioAlarm extends AppCompatActivity {
         }
         return json;
     }
+
+    private void resetAlarm(){
+        if(mMediaPlayer!=null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+        }
+        if(vibrator != null) {
+            vibrator.cancel();
+        }
+        finish();
+    }
+    private void musicSelect(){
+        if (musicType != null) {
+            mu = Uri.parse(musicType);
+        } else {
+
+        }
+
+        mMediaPlayer = new MediaPlayer();
+        if (mu != null) {
+            try {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    } else {
+                        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                    }
+                } else {
+                    mMediaPlayer.setDataSource(context, mu);
+                    mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        public void onPrepared(MediaPlayer mp) {
+                            mp.setLooping(true);
+                            mp.start();
+
+                        }
+                    });
+                    mMediaPlayer.prepareAsync();
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            mMediaPlayer = MediaPlayer.create(this, R.raw.guitar);
+            mMediaPlayer.setLooping(true);
+            mMediaPlayer.start();
+        }
+
+    }
+
+    private void vibrate(){
+
+        vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(new long[]{500, 2000},0);
+
+    }
+
+
 
 
 }
