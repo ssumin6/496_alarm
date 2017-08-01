@@ -101,6 +101,7 @@ public class SensitiveAlarm extends AppCompatActivity implements SensorEventList
         musicType = intent.getStringExtra("music");
         ringType = intent.getStringExtra("ring");
         COUNT = intent.getIntExtra("cnt", 0);
+        Log.d("숫자", ""+COUNT);
 
         if (ringType.equals("벨소리")) {
             musicSelect();
@@ -151,10 +152,10 @@ public class SensitiveAlarm extends AppCompatActivity implements SensorEventList
                 // 임계값보다 크게 움직였을 경우 다음을 수행
                 if(m_fSpeed > SHAKE_THRESHOLD)
                 {
-                    if(count <= COUNT) {
+                    if(count < COUNT) {
                         Log.i("kmsTest", "Shake");
                         count ++;
-                        txv.setText(Integer.toString(count)+"번 흔들어!\n\n" + Integer.toString(count)+"번 : 계속 흔들어!");
+                        txv.setText(Integer.toString(COUNT)+"번 흔들어!\n\n" + Integer.toString(count)+"번 : 계속 흔들어!");
                     } else{
                         Log.i("엥벌써나옴?","?");
                         resetAlarm();

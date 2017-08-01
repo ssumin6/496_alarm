@@ -161,7 +161,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                                 alarm_kind2 = (String) items2[id];
                                 String s = "  벨/진동 설정\n   " + (String) items2[id] + "    ";
                                 SpannableString ss1 = new SpannableString(s);
-                                ss1.setSpan(new RelativeSizeSpan(0.7f), 10, 18, 0);
+                                ss1.setSpan(new RelativeSizeSpan(0.7f), 10, 19, 0);
                                 alarmSelector2.setText(ss1);
                                 dialog.dismiss();
                             }
@@ -440,7 +440,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         final SeekBar seek = new SeekBar(this);
         seek.setMax(2);
         popDialog.setTitle("난이도를 선택하세요");
-        popDialog.setMessage("하                                    중                                    상");
+        popDialog.setMessage("하                                  중                                  상");
         popDialog.setView(seek);
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
