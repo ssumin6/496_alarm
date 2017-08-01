@@ -63,7 +63,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
     private ArrayList<Friend> group_friend;
     public MediaPlayer mMediaPlayer;
 
-    private int  h=12,m=12;
+    private int  h,m;
     private int requestCode;
     private final int FRIEND_ADD =1083;
     private final int MUSIC_ADD = 2017;
@@ -95,6 +95,8 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
         mCalendar = new GregorianCalendar();
         mCalendar.set(GregorianCalendar.SECOND, 0);
+        mCalendar.set(GregorianCalendar.HOUR_OF_DAY, Calendar.HOUR);
+        mCalendar.set(GregorianCalendar.MINUTE, Calendar.MINUTE);
 
         mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
@@ -136,6 +138,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         ////////////////////////////////////////////////////////////////////////////////
 
         final CharSequence[] items2 = {"벨소리", "진동", "벨소리+진동"};
+        ring = "벨소리";
         alarmSelector2 = (Button) findViewById(R.id.belltype);
         alarmSelector2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,10 +318,10 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
     //기능에 따라 서로 다른 pendingintent 설정
     private PendingIntent pendingIntent1() {
-        if (isGroup) {
-            Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
+        /*if (isGroup) {
+            Intent i = new Intent(getApplicationContext(), BasicAlarmG.class);
             i.putExtra("music", mu);
-            /*
+
             try {
                 Log.d("WHOAREYOU","ID: "+room_id);
                 JSONObject json = new JSONObject(room_id);
@@ -328,17 +331,17 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
                 e.printStackTrace();
             }
             i.putExtra("room",room_id);
-            i.putExtra("phone",my_Phone);*/
+            i.putExtra("phone",my_Phone);
             i.putExtra("ring", ring);
             PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
             return pi;
-        }else{
+        }else{*/
             Intent i = new Intent(getApplicationContext(), BasicAlarm.class);
             i.putExtra("music", mu);
             i.putExtra("ring", ring);
             PendingIntent pi = PendingIntent.getActivity(this, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
             return pi;
-        }
+    //    }
     }
 
     private PendingIntent pendingIntent2() {
