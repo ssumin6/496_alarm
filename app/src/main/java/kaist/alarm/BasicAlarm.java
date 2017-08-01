@@ -2,6 +2,7 @@ package kaist.alarm;
 
 import android.*;
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,7 +35,7 @@ import java.io.IOException;
  * Created by q on 2017-07-31.
  */
 
-public class BasicAlarm extends AppCompatActivity{
+public class BasicAlarm extends Activity {
 
     private static PowerManager.WakeLock sCpuWakeLock;
     Context context = this;

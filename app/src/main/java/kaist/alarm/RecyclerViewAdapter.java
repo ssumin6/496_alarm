@@ -63,6 +63,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
         Alarm item = mItems.get(position);
         mItems.get(position).setOpen(check);
         AlarmManager mManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        TelephonyManager mgr = (TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        String phonenumber = mgr.getLine1Number();
+        phonenumber = phonenumber.replace("+82","0");
         String type = item.alarm_type;
         int request_Code = item.pending_list_index;
         try{
@@ -84,13 +87,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
             Intent i;
             if (type.equals("기본알람")) {
                 i= new Intent(mContext, BasicAlarm.class);
+                i.putExtra("ring","벨소리");
+                i.putExtra("room",item.Room_id);
+                i.putExtra("phone",phonenumber);
+                i.putExtra("group",item.isGroup);
             } else if (type.equals("음성알람")) {
                 i= new Intent(mContext, AudioAlarm.class);
-
+                i.putExtra("ring","벨소리");
             } else if (type.equals("수학문제")) {
                 i= new Intent(mContext, MathAlarm.class);
+                i.putExtra("ring", "벨소리");
+                i.putExtra("level", 1);
             } else {
                 i= new Intent(mContext, SensitiveAlarm.class);
+                i.putExtra("ring", "벨소리");
+                i.putExtra("cnt", 5);
             }
             PendingIntent pi = PendingIntent.getActivity(mContext, request_Code, i, 0);
             if (check){

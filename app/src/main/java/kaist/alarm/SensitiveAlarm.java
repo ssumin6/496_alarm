@@ -1,6 +1,7 @@
 package kaist.alarm;
 
 import android.*;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +31,7 @@ import java.io.IOException;
  * Created by q on 2017-07-31.
  */
 
-public class SensitiveAlarm extends AppCompatActivity implements SensorEventListener{
+public class SensitiveAlarm extends Activity implements SensorEventListener{
 
     private static PowerManager.WakeLock sCpuWakeLock;
     Context context = this;

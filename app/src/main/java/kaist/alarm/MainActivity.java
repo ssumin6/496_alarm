@@ -38,7 +38,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private RecyclerView mRecyclerView;
     public RecyclerViewAdapter mAdapter;
@@ -185,8 +185,7 @@ public class MainActivity extends AppCompatActivity {
                                     i.putExtra("room",room_id);
                                     i.putExtra("phone",phonenumber);
                                     i.putExtra("group",true);
-                                    i.putExtra("phone",phonenumber);
-                                    i.putExtra("room",room_id);
+                                    i.putExtra("ring","벨소리");
                                     pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
                                     AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
                                     mManager.setAlarmClock(info, pi);
@@ -194,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 } else if (alarm_type.equals("음성알람")) {
                                     i= new Intent(getApplicationContext(), AudioAlarm.class);
+                                    i.putExtra("ring","벨소리");
                                     pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
                                     AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(),pi);
                                     mManager.setAlarmClock(info, pi);
@@ -201,12 +201,16 @@ public class MainActivity extends AppCompatActivity {
 
                                 } else if (alarm_type.equals("수학문제")) {
                                     i= new Intent(getApplicationContext(), MathAlarm.class);
+                                    i.putExtra("ring", "벨소리");
+                                    i.putExtra("level", 1);
                                     pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
                                     AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
                                     mManager.setAlarmClock(info, pi);
                                     Log.i("HelloAlarmActivity", cal.getTime().toString());
                                 } else if (alarm_type.equals("흔들기")) {
                                     i= new Intent(getApplicationContext(), SensitiveAlarm.class);
+                                    i.putExtra("ring", "벨소리");
+                                    i.putExtra("cnt", 5);
                                     pi = PendingIntent.getActivity(getApplicationContext(), alarm_request_code,i, 0);
                                     AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(), pi);
                                     mManager.setAlarmClock(info, pi);

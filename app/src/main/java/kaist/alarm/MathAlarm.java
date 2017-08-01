@@ -5,6 +5,7 @@ package kaist.alarm;
  */
 
 import android.*;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +34,7 @@ import java.io.IOException;
  * Created by q on 2017-07-29.
  */
 
-public class MathAlarm extends AppCompatActivity {
+public class MathAlarm extends Activity {
 
     TextView txv, txv2, txv3;
     private static PowerManager.WakeLock sCpuWakeLock;
