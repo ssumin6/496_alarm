@@ -11,6 +11,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,7 +71,6 @@ public class AudioAlarm extends AppCompatActivity {
 
         final Activity activity_c = this;
         Button ib = (Button) findViewById(R.id.mike);
-        txv = (TextView) findViewById(R.id.answer);
         txv2 = (TextView) findViewById(R.id.answer2);
         txv3 = (TextView) findViewById(R.id.question);
 
@@ -220,18 +220,16 @@ public class AudioAlarm extends AppCompatActivity {
             ArrayList<String> mResult = results.getStringArrayList(key);
             String[] rs = new String[mResult.size()];
             mResult.toArray(rs);
-            txv.setText(""+rs[0]);
+            txv2.setText(""+rs[0]);
             rm = rs[0].replaceAll(" ","");
             rm2 = list.get(j).toString().replaceAll(" ", "");
             if (rm.equals(rm2)){
                 resetAlarm();
             }
             else{
-                txv2.setText("false!");
                 mMediaPlayer.setLooping(true);
                 mMediaPlayer.seekTo(pos);
                 mMediaPlayer.start();
-
             }
 
         }
@@ -294,10 +292,14 @@ public class AudioAlarm extends AppCompatActivity {
 
         }
 
+        final AudioManager mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        final int originalVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
         mMediaPlayer = new MediaPlayer();
         if (mu != null) {
             try {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     } else {
                         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -308,6 +310,14 @@ public class AudioAlarm extends AppCompatActivity {
                         public void onPrepared(MediaPlayer mp) {
                             mp.setLooping(true);
                             mp.start();
+                            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+                            {
+                                @Override
+                                public void onCompletion(MediaPlayer mp)
+                                {
+                                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+                                }
+                            });
 
                         }
                     });
@@ -327,6 +337,14 @@ public class AudioAlarm extends AppCompatActivity {
             mMediaPlayer = MediaPlayer.create(this, R.raw.guitar);
             mMediaPlayer.setLooping(true);
             mMediaPlayer.start();
+            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+            {
+                @Override
+                public void onCompletion(MediaPlayer mp)
+                {
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+                }
+            });
         }
 
     }

@@ -9,6 +9,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class MathAlarm extends AppCompatActivity {
     Context context = this;
     int num1, num2, num3, ans;
     public MediaPlayer mMediaPlayer;
+    public AudioManager mAudioManager;
     int level;
 
     Uri mu;
@@ -174,6 +176,10 @@ public class MathAlarm extends AppCompatActivity {
 
         }
 
+        final AudioManager mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        final int originalVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
         mMediaPlayer = new MediaPlayer();
         if (mu != null) {
             try {
@@ -188,6 +194,14 @@ public class MathAlarm extends AppCompatActivity {
                         public void onPrepared(MediaPlayer mp) {
                             mp.setLooping(true);
                             mp.start();
+                            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+                            {
+                                @Override
+                                public void onCompletion(MediaPlayer mp)
+                                {
+                                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+                                }
+                            });
 
                         }
                     });
@@ -207,6 +221,14 @@ public class MathAlarm extends AppCompatActivity {
             mMediaPlayer = MediaPlayer.create(this, R.raw.guitar);
             mMediaPlayer.setLooping(true);
             mMediaPlayer.start();
+            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+            {
+                @Override
+                public void onCompletion(MediaPlayer mp)
+                {
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+                }
+            });
         }
 
     }
