@@ -23,30 +23,29 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="989e15a6e483721a3ba17a7148adb0ce" />
 
-        <activity android:name=".LoginActivity">
+        <activity android:name=".LoginActivity" android:excludeFromRecents="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"
-                    />
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddActivity" />
+        <activity android:name=".AddActivity"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".KaKaoSignupActivity" />
-        <activity android:name=".FriendAddActivity"/>
+        <activity android:name=".FriendAddActivity" />
         <activity android:name=".AudioAlarm" />
         <activity android:name=".MathAlarm" />
         <activity android:name=".BasicAlarm" />
-        <activity android:name=".SensitiveAlarm"/>
+        <activity android:name=".SensitiveAlarm" />
 
         <service
-            android:name=".FirebaseMessagingService">
+            android:name=".FirebaseMessagingService" >
             <intent-filter>
                 <action android:name=
                     "com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <service android:name=".FirebaseInstanceIDService">
+        <service android:name=".FirebaseInstanceIDService" >
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
