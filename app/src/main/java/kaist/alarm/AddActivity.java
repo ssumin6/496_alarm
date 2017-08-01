@@ -138,6 +138,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
         ////////////////////////////////////////////////////////////////////////////////
 
         final CharSequence[] items2 = {"벨소리", "진동", "벨소리+진동"};
+        ring = "벨소리";
         alarmSelector2 = (Button) findViewById(R.id.belltype);
         alarmSelector2.setOnClickListener(new View.OnClickListener() {
             @Override
