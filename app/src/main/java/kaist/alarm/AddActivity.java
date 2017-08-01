@@ -212,7 +212,7 @@ public class AddActivity extends AppCompatActivity implements CompoundButton.OnC
 
         // 일시설정 클래스로 현재 시각을 설정
         alarmSelector3 = (Button) findViewById(R.id.timePickerButton);
-        final TimePickerDialog tpd = new TimePickerDialog(this, TimePickerDialog.THEME_HOLO_LIGHT, listener,mCalendar.get(GregorianCalendar.HOUR_OF_DAY), mCalendar.get(GregorianCalendar.MINUTE), true);
+        final TimePickerDialog tpd = new TimePickerDialog(this, listener,mCalendar.get(GregorianCalendar.HOUR_OF_DAY), mCalendar.get(GregorianCalendar.MINUTE), true);
         alarmSelector3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

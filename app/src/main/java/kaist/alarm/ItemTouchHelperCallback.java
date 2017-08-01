@@ -39,19 +39,12 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback{
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             Toast.makeText(mContext, "그룹 알람은 삭제할 수 없습니다.",Toast.LENGTH_SHORT).show();
             return makeMovementFlags(dragFlags, 0 );
-        } else {
+        }else {
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             final int swipeFlags = ItemTouchHelper.START;
             return makeMovementFlags(dragFlags, swipeFlags);
         }
     }
-
-    @Override
-    public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
-        super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-
-    }
-
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target){

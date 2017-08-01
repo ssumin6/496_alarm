@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -87,7 +88,16 @@ public class BasicAlarm extends AppCompatActivity {
                 if(isGroup&& room!= null){
                     String url = "http://52.79.200.191:8080/room_user/"+room+"&&"+phone;
                     Log.d("WHOAREYOU", url);
-                    new NetworkTask2().execute(url,"POST");
+                    try {
+                        NetworkTask2 async = new NetworkTask2();
+                        String bool;
+                        if (Build.VERSION.SDK_INT >= 11)
+                            bool = async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
+                        else
+                            bool = async.execute(url).get();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     ALLWAKEUP();
                 }else{
                     resetAlarm();
@@ -196,7 +206,13 @@ public class BasicAlarm extends AppCompatActivity {
     private void ALLWAKEUP(){
         String url = "http://52.79.200.191:8080/room_wakeup/"+room;
         try {
-            String xrxr = new NetworkTask2().execute(url, "GET").get();
+            String xrxr;
+            NetworkTask3 async = new NetworkTask3();
+            if(Build.VERSION.SDK_INT >= 11)
+                xrxr = async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,url).get();
+            else
+                xrxr= async.execute(url).get();
+            //String xrxr = new NetworkTask3().execute(url).get();
             JSONObject json = new JSONObject(xrxr);
             String who = (String)json.get("message");
             if (who.equals("all wake up")){
@@ -223,7 +239,7 @@ public class BasicAlarm extends AppCompatActivity {
             String result;
             RequestHttpGeneral requestHttpURLConnection = new RequestHttpGeneral();
             try{
-                result = requestHttpURLConnection.request(url, params[1]);
+                result = requestHttpURLConnection.request(url, "POST");
                 return result;
             }catch(IOException e){
                 e.printStackTrace();
@@ -235,6 +251,36 @@ public class BasicAlarm extends AppCompatActivity {
 
         @Override
         protected  void onPostExecute(String str){super.onPostExecute(str);}
+
+
+    }
+    class NetworkTask3 extends AsyncTask<String, Void, String> {
+
+        private String url;
+
+        @Override
+        protected String doInBackground(String... params){
+            Log.d("serverConnection","doInBackground()");
+            url = params[0];
+            Log.d("WHOAREYOU", url);
+            Log.d("serverConnection","NetworkTask2 in BASICALARMG.class");
+            String result;
+            RequestHttpGeneral requestHttpURLConnection = new RequestHttpGeneral();
+            try{
+                result = requestHttpURLConnection.request(url, "GET");
+                return result;
+            }catch(IOException e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+        @Override
+        protected  void onPreExecute(){super.onPreExecute();}
+
+        @Override
+        protected  void onPostExecute(String str){super.onPostExecute(str);}
+
+
     }
 
 }
