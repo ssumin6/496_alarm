@@ -7,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -211,7 +212,7 @@ public class AddActivity extends Activity implements CompoundButton.OnCheckedCha
 
         // 일시설정 클래스로 현재 시각을 설정
         alarmSelector3 = (Button) findViewById(R.id.timePickerButton);
-        final TimePickerDialog tpd = new TimePickerDialog(this, listener, mCalendar.HOUR_OF_DAY, mCalendar.MINUTE, true);
+        final TimePickerDialog tpd = new TimePickerDialog(this, TimePickerDialog.THEME_HOLO_LIGHT, listener,mCalendar.get(GregorianCalendar.HOUR_OF_DAY), mCalendar.get(GregorianCalendar.MINUTE), true);
         alarmSelector3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -409,6 +410,7 @@ public class AddActivity extends Activity implements CompoundButton.OnCheckedCha
                 }
                 values.put("userlist",userlist);
 
+                my_Phone = my_Phone.replace("+82","0");
                 values.put("manager",my_Phone);
 
                 }catch(JSONException e){

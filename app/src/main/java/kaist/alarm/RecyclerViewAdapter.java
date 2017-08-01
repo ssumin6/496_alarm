@@ -137,29 +137,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
     public void onItemRemove(int position) {
         Alarm deleteItem = mItems.get(position);
         boolean notOkay= deleteItem.isGroup;//group 알람이면 true
-        if (!notOkay) {
-            int code = deleteItem.pending_list_index;
-            boolean do_ = deleteItem.open;
-            Log.d("DeleteALARM", mItems.get(position).time_text);
-            Log.d("Delete", "occurred");
-            mItems.remove(position);
-            notifyItemRemoved(position);
-            notifyDataSetChanged();
 
-            AlarmManager mManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        int code = deleteItem.pending_list_index;
+        boolean do_ = deleteItem.open;
+        Log.d("DeleteALARM", mItems.get(position).time_text);
+        Log.d("Delete", "occurred");
+        mItems.remove(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
 
-            if (do_) {
-                //알람 deletion
-                Intent temp = new Intent(mContext, BasicAlarm.class);
-                PendingIntent pi = PendingIntent.getActivity(mContext, code, temp, 0);
-                mManager.cancel(pi);
-                pi.cancel();
-            }
+        AlarmManager mManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+
+        if (do_) {
+            //알람 deletion
+            Intent temp = new Intent(mContext, BasicAlarm.class);
+            PendingIntent pi = PendingIntent.getActivity(mContext, code, temp, 0);
+            mManager.cancel(pi);
+            pi.cancel();
+        }
 
             last_position -= 1;
-        }else{
-            Toast.makeText(mContext, "그룹 알람은 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
     @Override
@@ -187,6 +185,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
     public int getItemCount(){
         if (mItems == null) return 0;
         return mItems.size();
+    }
+
+    public Alarm getItem(int position){
+        if (mItems == null) return null;
+        return mItems.get(position);
     }
 
     public void add(Alarm ala){

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by q on 2017-07-28.
@@ -34,11 +35,21 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback{
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
             final int swipeFlags = 0;
             return makeMovementFlags(dragFlags, swipeFlags);
+        }else if (((RecyclerViewAdapter)recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition()).isGroup){
+            final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            Toast.makeText(mContext, "그룹 알람은 삭제할 수 없습니다.",Toast.LENGTH_SHORT).show();
+            return makeMovementFlags(dragFlags, 0 );
         } else {
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             final int swipeFlags = ItemTouchHelper.START;
             return makeMovementFlags(dragFlags, swipeFlags);
         }
+    }
+
+    @Override
+    public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
+        super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
     }
 
 
