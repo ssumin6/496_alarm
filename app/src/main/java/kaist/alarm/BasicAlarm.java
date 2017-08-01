@@ -202,16 +202,8 @@ public class BasicAlarm extends Activity {
             if (who.equals("all wake up")){
                 resetAlarm();
             }else{
-                final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getApplicationContext());
-                alertBuilder.setTitle(who+"\n 가 일어나지 않아서 알람을 끌 수 없습니다.").setCancelable(false).setPositiveButton("새로고침", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        ALLWAKEUP();
-                    }
-                });
-                // 다이얼로그 생성
-                alertBuilder.show();
+                Toast.makeText(getApplicationContext(), who+"\n 가 일어나지 않아서 알람을 끌 수 없습니다.", Toast.LENGTH_SHORT).show();
+
             }
         }catch(Exception e){
             e.printStackTrace();

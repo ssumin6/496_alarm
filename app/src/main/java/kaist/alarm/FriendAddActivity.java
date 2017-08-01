@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,7 @@ public class FriendAddActivity extends Activity {
 
         TelephonyManager mgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         my_Phone = mgr.getLine1Number();
+        my_Phone = my_Phone.replace("+82","0");
 
         final Uri ContentURI = ContactsContract.Contacts.CONTENT_URI;
         String _ID = ContactsContract.Contacts._ID;
@@ -93,9 +95,11 @@ public class FriendAddActivity extends Activity {
                             tp = tp +" "+selected.get(i).getName();
                         }
                     }
+                    Toast.makeText(getApplicationContext(), tp+"이 선택되었습니다.", Toast.LENGTH_SHORT).show();
                     Log.d("Select",tp);
                 }else{
                     selected.remove(who);
+                    Toast.makeText(getApplicationContext(), who+"가 제거되었습니다.", Toast.LENGTH_SHORT).show();
                     Log.d("Removed","okay"+selected.size());
                 }
             }
