@@ -240,6 +240,7 @@ public class MainActivity extends Activity {
                     });
             AlertDialog alert = alert_confirm.create();
             alert.show();
+            setting =0;
         }
 
     }

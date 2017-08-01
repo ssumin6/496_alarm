@@ -30,6 +30,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
     private Context mContext;
     private ArrayList<Alarm> mItems;
     private int last_position;
+    private String phonenumber;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
@@ -57,15 +58,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter implements ItemTou
         mContext = context;
         mItems = items;
         last_position = items.size()-1;
+        TelephonyManager mgr = (TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        phonenumber = mgr.getLine1Number();
+        phonenumber = phonenumber.replace("+82","0");
     }
 
     public void setAlarm(boolean check, int position){
         Alarm item = mItems.get(position);
         mItems.get(position).setOpen(check);
         AlarmManager mManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-        TelephonyManager mgr = (TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE);
-        String phonenumber = mgr.getLine1Number();
-        phonenumber = phonenumber.replace("+82","0");
         String type = item.alarm_type;
         int request_Code = item.pending_list_index;
         try{
